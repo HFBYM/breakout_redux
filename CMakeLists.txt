@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 11)
 # debug by default 
 # set(CMAKE_BUILD_TYPE Debug)
 
+# set the macro
+add_compile_definitions(PROJECT_DIR="${CMAKE_SOURCE_DIR}")
+
 # set the path of directory
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake/binary_build)  #??
 set(CMAKE_SUPPRESS_REGENERATION true) #depose the middle files      ??
@@ -13,7 +16,7 @@ set(CMAKE_SUPPRESS_REGENERATION true) #depose the middle files      ??
 # if generator is VS
 # set the include path
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)
+include_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)  #??file system
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLAD)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/glm)
