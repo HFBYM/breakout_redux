@@ -1,4 +1,4 @@
-@echo off
+@REM @echo off
 ::figure out whether cmake is downloaded
 where cmake
 if %errorlevel% == 1 (
@@ -19,5 +19,5 @@ else (
 )
 
 ::building
-@REM cmake -G %generator% .
+cmake -G %generator% .
 pause
