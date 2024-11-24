@@ -19,5 +19,6 @@ else (
 )
 
 ::building
-cmake -G %generator% .
+@REM cmake -G %generator% .
+cmake -G "Visual Studio 17 2022" -B ./build_cmake
 pause
