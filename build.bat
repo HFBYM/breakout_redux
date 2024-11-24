@@ -1,13 +1,13 @@
 @REM @echo off
 ::figure out whether cmake is downloaded
-where cmake
+where cmake > nul
 if %errorlevel% == 1 (
 echo Failed to find cmake
 exit)
 
 set generator=
 ::check if Visual Studio is on
-cmake /? | findstr /C:"Visual Studio" > nul 
+cmake /? | findstr /C:"Visual Studio" >nul
 if %errorlevel% == 0 (set generator="Visual Studio")^
 else (
     :: check if gcc is on
@@ -19,6 +19,7 @@ else (
 )
 
 ::building
-@REM cmake -G %generator% .
 cmake -G "Visual Studio 17 2022" -B ./build_cmake
+@REM cmake -G "MinGW Makefiles" -B ./build_cmake
+@REM cmake --build ./build_cmake --config Debug
 pause

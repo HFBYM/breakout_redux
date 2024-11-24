@@ -1,6 +1,6 @@
 # basic setting
 cmake_minimum_required(VERSION 3.6)
-project(Breakout CXX)
+project(Breakout)
 set(CMAKE_CXX_STANDARD 11)
 
 # debug by default 
