@@ -1,9 +1,8 @@
 #include"game.h"
 int main()
 {
-    Game& game = game.get_instance();
-    game.init();
-    game.run();
-
+    Game& breakout = Game::get_instance();
+    breakout.init();
+    breakout.run();
     return 0;
 }

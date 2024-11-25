@@ -2,13 +2,16 @@
 #include<glad.h>	//the glew lib is 32bit so we use glad
 #include<glfw3.h>	//this lib shuld be included after glad
 #include<iostream>
-#include"Debug.h"
+#include"keyboard.h"
+//#include"Debug.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
 static int init_screen_height = 600;
 
-static GLFWwindow* glInit()
+static GLFWwindow* window = nullptr;
+
+static GLFWwindow* gl_init()
 {
 	//initialize the glfw
 	glfwInit();
@@ -35,13 +38,8 @@ static GLFWwindow* glInit()
 		glfwTerminate();
 		__debugbreak();
 	}
-	Check();
+	//Check();
 	return window;
-}
-
-Game::Game(){}
-Game::~Game()
-{
 }
 
 Game& Game:: get_instance()
@@ -52,9 +50,30 @@ Game& Game:: get_instance()
 
 void Game::init()
 {
+	window = gl_init();
+	//set the viewport leftdown is origin
+	glViewport(0, 0, init_screen_width, init_screen_height);	
+	//function will work whenever keys pressed
+	glfwSetKeyCallback(window, KeyBoard::key_callback);		
+	//function will work each time window resized
+	glfwSetWindowSizeCallback(window, size_callback);
 
+	// to reduce the cost
+	glEnable(GL_CULL_FACE);
+	// enable blend and caution not to test the depth
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	std::cout << "Game is initialized" << std::endl;
 }
 
 void Game::run()
 {
+	std::cout << "Game is running" << std::endl;
+}
+
+Game::~Game()
+{
+	std::cout << "Game is deleted" << std::endl;
 }
