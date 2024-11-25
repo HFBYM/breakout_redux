@@ -1,11 +1,9 @@
-#include<iostream>
-void echo();
+#include"game.h"
 int main()
 {
-    std::cout << "Hello World" << std::endl;
-#ifdef PROJECT_DIR
-    std::cout << "project" << PROJECT_DIR << std::endl;
-#endif
-    echo();
+    Game& game = game.get_instance();
+    game.init();
+    game.run();
+
     return 0;
 }

@@ -1,3 +1,3 @@
 # ignore the building directory and the binary file
-./build_cmake
-./bin/Debug
+/build_cmake
+/bin/Debug
