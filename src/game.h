@@ -1,5 +1,5 @@
 #pragma once
-/// @brief This is a singleton
+/// @brief This is a singleton rather than a static one cause some functions can't be called anywhere
 class Game
 {
 public:

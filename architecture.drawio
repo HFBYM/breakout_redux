@@ -13,14 +13,26 @@
                 <mxCell id="11" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="10">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="game&lt;br&gt;窗口、初始化、帧、输入" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="13" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="12">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="game&lt;br&gt;窗口、初始化、帧" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="490" y="100" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="7" value="debug&lt;br&gt;开发测试" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="270" y="350" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="keyboard&lt;br&gt;键盘输入" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="500" y="250" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="320" y="230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="14">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="resource_manager&lt;br&gt;导入、管理着色器、纹理" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="490" y="240" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="shader&lt;br&gt;编译着色器、设置uniform" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="465" y="350" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

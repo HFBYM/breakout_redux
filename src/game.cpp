@@ -3,11 +3,14 @@
 #include<glfw3.h>	//this lib shuld be included after glad
 #include<iostream>
 #include"keyboard.h"
+#include"resource_manager.h"
 //#include"Debug.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
 static int init_screen_height = 600;
+static int screen_width;
+static int screen_height;
 
 static GLFWwindow* window = nullptr;
 
@@ -42,6 +45,14 @@ static GLFWwindow* gl_init()
 	return window;
 }
 
+/// @brief save the width and height resized
+static void size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	screen_height = height;
+	screen_width = width;
+}
+
 Game& Game:: get_instance()
 {
 	static Game m_game;
@@ -64,6 +75,7 @@ void Game::init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	ResourceManager::init();
 
 	std::cout << "Game is initialized" << std::endl;
 }
