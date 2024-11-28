@@ -1,23 +1,37 @@
 #pragma once
-#include<glad.h>
 class Texture2D
 {
+private:
+	unsigned int id = 0;
+	unsigned int width = 0, height = 0;
+
+	/// @brief the format of the texture
+	unsigned int internal_format;			
+
+	/// @brief the format of the pircture
+	unsigned int image_format;			
+
+	/// @brief how to wrap in s and t axis
+	unsigned int wrap_s, wrap_t;			
+
+	/// @brief how to stretch when scaling
+	unsigned int filter_min, filter_max;
+
+	const char* name;
+	bool isGenerate = false;
 public:
-	GLuint id;
-	GLuint width, height;
-	GLuint internal_format;			//纹理的格式
-	GLuint image_format;			//图片的格式
-	GLuint wrap_s, wrap_t;			//横纵方向缠绕方式
-	GLuint filter_min, filter_max;	//放大或缩小时的图片伸缩方式
+	Texture2D(const char* name, unsigned int inFormat, unsigned int imaFormat);
+	Texture2D() = default;
 
-	Texture2D();
-
-
-	Texture2D(Texture2D&&) = default;
-
-	//重载移动赋值语句 注意此时拷贝赋值语句已被删除
 	Texture2D& operator=(Texture2D&&) = default;
 
-	void generate(GLuint width, GLuint height, unsigned char* data);
+	/// @brief it doesn't decide which slot to bind
+	void generate(unsigned int width, unsigned int height, unsigned char* data);
+
 	void bind() const;
+
+	/// @brief delete the texture
+	void clear();
+
+	inline unsigned int getImage_Format() { return image_format; }
 };

@@ -1,4 +1,6 @@
 # pragma once
+struct GLFWwindow;
+
 /// @brief store and process the keyboard input
 class KeyBoard
 {

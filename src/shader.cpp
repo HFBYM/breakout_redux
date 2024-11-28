@@ -2,6 +2,9 @@
 #include<glad.h>	
 #include<glfw3.h>	
 #include<iostream>
+#include<glm.hpp>
+#include<gtc\type_ptr.hpp>
+#include<gtc/matrix_transform.hpp>
 // this is a micro to conveniently check if a shader is compiled
 #define CHECK_COMPILE() if(!is_compiled){\
     std::cout << "ERROR::SHADER: function "<<__FUNCTION__<<" uses uncompiled shader "\
@@ -76,57 +79,51 @@ void Shader::clear()
     this->is_compiled = false;
 }
 
-void Shader::setFloat(const GLchar* name, GLfloat val, GLboolean useShader)
+template<typename T>
+void Shader::setUniform(const char* name, T& value)
 {
-    if (useShader)
+    CHECK_COMPILE();
+    int pos = glGetUniformLocation(this->id, name);
+    if (pos == -1)
+    {
+        std::cout << "ERROR::UNIFORM: " << name << " can't be found in " << this->m_name << std::endl;
+        __debugbreak();
+    }
+    if constexpr (std::is_same_v<T, float>)
+    {
         this->use();
-    glUniform1f(glGetUniformLocation(this->id, name), val);
-}
-void Shader::setInteger(const GLchar* name, GLint value, GLboolean useShader)
-{
-    if (useShader)
+        glUniform1f(glGetUniformLocation(this->id, name), value);
+
+    }
+    else if constexpr (std::is_same_v<T, int>)
+    {
         this->use();
-    glUniform1i(glGetUniformLocation(this->id, name), value);
-}
-void Shader::setVector2f(const GLchar* name, GLfloat x, GLfloat y, GLboolean useShader)
-{
-    if (useShader)
+        glUniform1i(glGetUniformLocation(this->id, name), value);
+    }
+    else if constexpr (std::is_same_v<T, glm::vec2>)
+    {
         this->use();
-    glUniform2f(glGetUniformLocation(this->id, name), x, y);
-}
-void Shader::setVector2f(const GLchar* name, const glm::vec2& value, GLboolean useShader)
-{
-    if (useShader)
+        glUniform2f(glGetUniformLocation(this->id, name), value.x, value.y);
+    }
+    else if constexpr (std::is_same_v<T, glm::vec3>)
+    {
         this->use();
-    glUniform2f(glGetUniformLocation(this->id, name), value.x, value.y);
-}
-void Shader::setVector3f(const GLchar* name, GLfloat x, GLfloat y, GLfloat z, GLboolean useShader)
-{
-    if (useShader)
+        glUniform3f(glGetUniformLocation(this->id, name), value.x, value.y, value.z);
+    }
+    else if constexpr (std::is_same_v<T, glm::vec4>)
+    {
         this->use();
-    glUniform3f(glGetUniformLocation(this->id, name), x, y, z);
-}
-void Shader::setVector3f(const GLchar* name, const glm::vec3& value, GLboolean useShader)
-{
-    if (useShader)
+        glUniform4f(glGetUniformLocation(this->id, name), value.x, value.y, value.z, value.w);
+    }
+    else if constexpr (std::is_same_v<T, glm::mat4>)
+    {
         this->use();
-    glUniform3f(glGetUniformLocation(this->id, name), value.x, value.y, value.z);
-}
-void Shader::setVector4f(const GLchar* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLboolean useShader)
-{
-    if (useShader)
-        this->use();
-    glUniform4f(glGetUniformLocation(this->id, name), x, y, z, w);
-}
-void Shader::setVector4f(const GLchar* name, const glm::vec4& value, GLboolean useShader)
-{
-    if (useShader)
-        this->use();
-    glUniform4f(glGetUniformLocation(this->id, name), value.x, value.y, value.z, value.w);
-}
-void Shader::setMatrix4(const GLchar* name, const glm::mat4& matrix, GLboolean useShader)
-{
-    if (useShader)
-        this->use();
-    glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    else
+    {
+        std::cout << "ERROR::UNIFORM: wrong type of value for " << name << " in " << this->m_name 
+            << std::endl;
+        __debugbreak();
+    }
 }

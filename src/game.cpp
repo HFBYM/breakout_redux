@@ -5,12 +5,17 @@
 #include"keyboard.h"
 #include"resource_manager.h"
 //#include"Debug.h"
+#define CHECK_INIT() if(!isInit){\
+	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate game not initialized"<<std::endl;\
+	__debugbreak();}
+
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
 static int init_screen_height = 600;
 static int screen_width;
 static int screen_height;
+static bool isInit = false;
 
 static GLFWwindow* window = nullptr;
 
@@ -61,16 +66,22 @@ Game& Game:: get_instance()
 
 void Game::init()
 {
+	isInit = true;
+
 	window = gl_init();
+
 	//set the viewport leftdown is origin
 	glViewport(0, 0, init_screen_width, init_screen_height);	
+
 	//function will work whenever keys pressed
 	glfwSetKeyCallback(window, KeyBoard::key_callback);		
+
 	//function will work each time window resized
 	glfwSetWindowSizeCallback(window, size_callback);
 
 	// to reduce the cost
 	glEnable(GL_CULL_FACE);
+
 	// enable blend and caution not to test the depth
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -82,10 +93,12 @@ void Game::init()
 
 void Game::run()
 {
+	CHECK_INIT();
 	std::cout << "Game is running" << std::endl;
 }
 
 Game::~Game()
 {
+	ResourceManager::clear();
 	std::cout << "Game is deleted" << std::endl;
 }

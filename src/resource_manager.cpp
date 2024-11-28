@@ -4,32 +4,24 @@
 #include<string>
 #include<iostream>
 #include<stb.image.h>
-//#include<vector>
 #include<map>
-#include"Shader.h"
-#include"Texture.h"
+#include<glad.h>
+#include"shader.h"
+#include"texture.h"
 // lib for math
 //#include<glm.hpp>
 //#include<gtc\type_ptr.hpp>
 //#include<gtc/matrix_transform.hpp>
-
+#define CHECK_INIT() if(!isInit){\
+	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate resource manager not initialized"<<std::endl;\
+	__debugbreak();}
 
 //initialize the static virants
 static std::map<std::string, Texture2D> textures;
 static std::map<std::string, Shader> shaders;
+static bool isInit = false;
 
-Shader& ResourceManager::getShader(const char* name)
-{
-	if (shaders.find(name) != shaders.end())
-		return shaders[name];
-	else
-	{
-		std::cout << "ERROR::GET_SHADER: failed to find the shader named " << name << std::endl;
-		__debugbreak();
-		return shaders[name];
-	}
-}
-void ResourceManager::loadShader(const char* file, const char* name)
+static void loadShader(const char* file, const char* name)
 {
 	std::ifstream ifs(file);
 	if (!ifs.is_open())
@@ -81,53 +73,65 @@ void ResourceManager::loadShader(const char* file, const char* name)
 	// the data is moved by move copy and assignment function
 	shaders[name] = std::move(shader);
 }
-Texture2D ResourceManager::loadTextureFromFile(const char* file, bool has_alpha)
+
+/// @brief load texture2D from file
+/// @param file filepath
+/// @param has_alpha decides whether or not this texture has alpha channel
+/// @param name the texture name
+static void loadTexture(const char* file, bool has_alpha, const char* name)
 {
-	Texture2D texture;
-	if (has_alpha)
-	{
-		texture.internal_format = GL_RGBA;
-		texture.image_format = GL_RGBA;
-	}
+	Texture2D texture(name, has_alpha ? GL_RGBA : GL_RGB, has_alpha ? GL_RGBA : GL_RGB);
 
 	// usually we need to turn up and down the texture cause OpenGL renders from the leftdown while
 	// picture loaded from leftup. But it isn't here because the proj matrix has already turned
 	// stbi_set_flip_vertically_on_load(1);
 
 	int width, height;
+
 	// the forth parm returns the channels of the image which is of no use
 	unsigned char* image = stbi_load(file, &width, &height, 0,
-		texture.image_format == GL_RGB ? 3 : 4);
+		texture.getImage_Format() == GL_RGB ? 3 : 4);
 
 	texture.generate(width, height, image);
 
 	// the data in CPU is useless after sended to GPU
 	stbi_image_free(image);
 
-	return texture;
-}
-void ResourceManager::loadTexture(const char* file, bool has_alpha, const char* name)
-{
 	// the data is moved by move copy and assignment function
-	textures[name] = loadTextureFromFile(file, has_alpha);
+	textures[name] = std::move(texture);
+}
+
+Shader& ResourceManager::getShader(const char* name)
+{
+	CHECK_INIT();
+	if (shaders.find(name) != shaders.end())
+		return shaders[name];
+	else
+	{
+		std::cout << "ERROR::GET_SHADER: failed to find the shader " << name << std::endl;
+		__debugbreak();
+		return shaders[name];
+	}
 }
 Texture2D& ResourceManager::getTexture(const char* name)
 {
-	if (textures.find(name) != textures.end())	//可被找到
+	CHECK_INIT();
+	if (textures.find(name) != textures.end())
 		return textures[name];
 	else
 	{
-		std::cout << "ERROR::GET_TEXTURE: failed to find the texture named " << name << std::endl;
+		std::cout << "ERROR::GET_TEXTURE: failed to find the texture " << name << std::endl;
 		__debugbreak();
 		return textures[name];
 	}
 }
 void ResourceManager::init()
 {
+	isInit = true;
 	//??json文件管理
 	//load in shaders
-	ResourceManager::loadShader(PROJECT_DIR"assets/shaders/postProcess.shader", "postProcess");
-	ResourceManager::loadShader(PROJECT_DIR"assets/shaders/sprite.shader", "sprite");
+	loadShader(PROJECT_DIR"/assets/shaders/postProcess.shader", "postProcess");
+	loadShader(PROJECT_DIR"/assets/shaders/sprite.shader", "sprite");
 
 	////正射投影即可 左上角是(0,0)与屏幕坐标对应	旋转中心在左上角 上下翻转同时纹理也上下反转???
 	//glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(this->init_screen_width),
@@ -135,31 +139,32 @@ void ResourceManager::init()
 	//ResourceManager::getShader("sprite").use().setInteger("image", 0);	//设定采样槽
 	//ResourceManager::getShader("sprite").use().setMatrix4("proj", proj);	//设置正射投影
 
-	ResourceManager::loadShader(PROJECT_DIR"assets/shaders/particle.shader", "particle");
+	loadShader(PROJECT_DIR"/assets/shaders/particle.shader", "particle");
 	//ResourceManager::getShader("particle").use().setInteger("sprite", 0);	//设定采样槽
 	//ResourceManager::getShader("particle").use().setMatrix4("proj", proj);	//设置正射投影
 
 	//load in textures
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/background.jpg", GL_FALSE, "background");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/block.png", GL_FALSE, "block");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/block_solid.png", GL_FALSE, "block_solid");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/basketball.png", GL_TRUE, "basketball");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/paddle.png", GL_TRUE, "paddle");
+	loadTexture(PROJECT_DIR"/assets/textures/background.jpg", false, "background");
+	loadTexture(PROJECT_DIR"/assets/textures/block.png", false, "block");
+	loadTexture(PROJECT_DIR"/assets/textures/block_solid.png", false, "block_solid");
+	loadTexture(PROJECT_DIR"/assets/textures/basketball.png", true, "basketball");
+	loadTexture(PROJECT_DIR"/assets/textures/paddle.png", true, "paddle");
 
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/particle.png", GL_TRUE, "particle");
+	loadTexture(PROJECT_DIR"/assets/textures/particle.png", true, "particle");
 
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_chaos.png", GL_FALSE, "tex_chaos");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_confuse.png", GL_FALSE, "tex_confuse");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_increase.png", GL_FALSE, "tex_size");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_passthrough.png", GL_FALSE, "tex_pass");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_speed.png", GL_FALSE, "tex_speed");
-	ResourceManager::loadTexture(PROJECT_DIR"assets/textures/powerup_sticky.png", GL_FALSE, "tex_sticky");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_chaos.png", false, "tex_chaos");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_confuse.png", false, "tex_confuse");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_increase.png", false, "tex_size");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_passthrough.png", false, "tex_pass");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_speed.png", false, "tex_speed");
+	loadTexture(PROJECT_DIR"/assets/textures/powerup_sticky.png", false, "tex_sticky");
 
 }
 void ResourceManager::clear()
 {
+	CHECK_INIT();
 	for (auto& iter : shaders)
 		iter.second.clear();
 	for (auto& iter : textures)
-		glDeleteTextures(1, &iter.second.id);
+		iter.second.clear();
 }
