@@ -3,15 +3,7 @@ class Shader
 {
 public:
     Shader(const char*name):m_name(name){}
-    Shader() = default;
-
-    /// @brief can't use a shader to construct another cause the id is uniqe
-    Shader(Shader&) = delete;
-    Shader& operator=(Shader&) = delete;
-
-    /// @brief the right value could be use to assign
-    Shader& operator=(Shader&& other) = default;
-    Shader(Shader&&) = default;
+    Shader& operator=(Shader&& other) = delete;
 
     /// @brief return *this and bind the shader
     Shader& use();
@@ -19,7 +11,8 @@ public:
     /// @brief a shader must be compiled
     void compile(const char* vertexSource, const char* fragmentSouce);
 
-    /// @brief delete the shader program which must be a compiled one
+    /// @brief delete the shader program which must be a compiled one.
+    /// it can be recompile after clear but name can't change
     void clear();
 
     /// @brief if Uniform can't be found, program will break down.  

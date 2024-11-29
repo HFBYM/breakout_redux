@@ -9,7 +9,6 @@ Texture2D::Texture2D(const char* name, unsigned int inFormat, unsigned int imaFo
 	glGenTextures(1, &this->id);
 }
 
-
 void Texture2D::generate(unsigned int width, unsigned int height, unsigned char* data) 
 {
 	this->width = width;
@@ -44,4 +43,5 @@ void Texture2D::clear()
 		__debugbreak();
 	}
 	glDeleteTextures(1, &this->id);
+	isGenerate = false;
 }

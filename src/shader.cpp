@@ -118,7 +118,7 @@ void Shader::setUniform(const char* name, T& value)
     else if constexpr (std::is_same_v<T, glm::mat4>)
     {
         this->use();
-        glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, GL_FALSE, glm::value_ptr(value));
     }
     else
     {
@@ -127,3 +127,11 @@ void Shader::setUniform(const char* name, T& value)
         __debugbreak();
     }
 }
+
+/// @brief need to instance the template
+template void Shader::setUniform<int>(const char* name, int& value);
+template void Shader::setUniform<float>(const char* name, float& value);
+template void Shader::setUniform<glm::vec2>(const char* name, glm::vec2& value);
+template void Shader::setUniform<glm::vec3>(const char* name, glm::vec3& value);
+template void Shader::setUniform<glm::vec4>(const char* name, glm::vec4& value);
+template void Shader::setUniform<glm::mat4>(const char* name, glm::mat4& value);

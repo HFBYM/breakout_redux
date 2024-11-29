@@ -4,11 +4,10 @@
 #include<iostream>
 #include"keyboard.h"
 #include"resource_manager.h"
-//#include"Debug.h"
+#include"renderer.h"
 #define CHECK_INIT() if(!isInit){\
 	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate game not initialized"<<std::endl;\
 	__debugbreak();}
-
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -87,6 +86,7 @@ void Game::init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ResourceManager::init();
+	Renderer::init();
 
 	std::cout << "Game is initialized" << std::endl;
 }
@@ -100,5 +100,6 @@ void Game::run()
 Game::~Game()
 {
 	ResourceManager::clear();
+	Renderer::clear();
 	std::cout << "Game is deleted" << std::endl;
 }

@@ -12,14 +12,18 @@
 //#include<glm.hpp>
 //#include<gtc\type_ptr.hpp>
 //#include<gtc/matrix_transform.hpp>
-#define CHECK_INIT() if(!isInit){\
+#define CHECK_STATUS() if(!isInit){\
 	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate resource manager not initialized"<<std::endl;\
+	__debugbreak();}\
+	if(isClear){\
+	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate resource manager cleared"<<std::endl;\
 	__debugbreak();}
 
 //initialize the static virants
-static std::map<std::string, Texture2D> textures;
-static std::map<std::string, Shader> shaders;
+static std::map<const char*, Texture2D*> textures;
+static std::map<const char*, Shader*> shaders;
 static bool isInit = false;
+static bool isClear = false;
 
 static void loadShader(const char* file, const char* name)
 {
@@ -67,11 +71,8 @@ static void loadShader(const char* file, const char* name)
 			<< (f_found ? NULL : "no fragment shader ") << "named: " << name << " in\t" << file << std::endl;
 		__debugbreak();
 	}
-	Shader shader(name);
-	shader.compile(ss[VERTEX].str().c_str(), ss[FRAGMENT].str().c_str());
-
-	// the data is moved by move copy and assignment function
-	shaders[name] = std::move(shader);
+	shaders[name] = new Shader(name);
+	shaders[name]->compile(ss[VERTEX].str().c_str(), ss[FRAGMENT].str().c_str());
 }
 
 /// @brief load texture2D from file
@@ -80,7 +81,7 @@ static void loadShader(const char* file, const char* name)
 /// @param name the texture name
 static void loadTexture(const char* file, bool has_alpha, const char* name)
 {
-	Texture2D texture(name, has_alpha ? GL_RGBA : GL_RGB, has_alpha ? GL_RGBA : GL_RGB);
+	textures[name] = new Texture2D(name, has_alpha ? GL_RGBA : GL_RGB, has_alpha ? GL_RGBA : GL_RGB);
 
 	// usually we need to turn up and down the texture cause OpenGL renders from the leftdown while
 	// picture loaded from leftup. But it isn't here because the proj matrix has already turned
@@ -90,39 +91,36 @@ static void loadTexture(const char* file, bool has_alpha, const char* name)
 
 	// the forth parm returns the channels of the image which is of no use
 	unsigned char* image = stbi_load(file, &width, &height, 0,
-		texture.getImage_Format() == GL_RGB ? 3 : 4);
+		textures[name]->getImage_Format() == GL_RGB ? 3 : 4);
 
-	texture.generate(width, height, image);
+	textures[name]->generate(width, height, image);
 
 	// the data in CPU is useless after sended to GPU
 	stbi_image_free(image);
-
-	// the data is moved by move copy and assignment function
-	textures[name] = std::move(texture);
 }
 
 Shader& ResourceManager::getShader(const char* name)
 {
-	CHECK_INIT();
+	CHECK_STATUS();
 	if (shaders.find(name) != shaders.end())
-		return shaders[name];
+		return *shaders[name];
 	else
 	{
 		std::cout << "ERROR::GET_SHADER: failed to find the shader " << name << std::endl;
 		__debugbreak();
-		return shaders[name];
+		return *shaders[name];
 	}
 }
 Texture2D& ResourceManager::getTexture(const char* name)
 {
-	CHECK_INIT();
+	CHECK_STATUS();
 	if (textures.find(name) != textures.end())
-		return textures[name];
+		return *textures[name];
 	else
 	{
 		std::cout << "ERROR::GET_TEXTURE: failed to find the texture " << name << std::endl;
 		__debugbreak();
-		return textures[name];
+		return *textures[name];
 	}
 }
 void ResourceManager::init()
@@ -162,9 +160,18 @@ void ResourceManager::init()
 }
 void ResourceManager::clear()
 {
-	CHECK_INIT();
+	CHECK_STATUS();
+	isClear = true;
 	for (auto& iter : shaders)
-		iter.second.clear();
+	{
+		iter.second->clear();
+		delete iter.second;
+	}
 	for (auto& iter : textures)
-		iter.second.clear();
+	{
+		iter.second->clear();
+		delete iter.second;
+	}
+	shaders.clear();
+	textures.clear();
 }
