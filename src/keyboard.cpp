@@ -14,5 +14,6 @@ void KeyBoard:: key_callback(GLFWwindow* window, int key, int scancode, int acti
 }
 void KeyBoard:: set_process(process_func_ptr func_p)
 {
-	functions_ptr.push_back(func_p);
+	if(func_p)
+		functions_ptr.push_back(func_p);
 }

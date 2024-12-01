@@ -1,13 +1,11 @@
 #include"game.h"
 #include<glad.h>	//the glew lib is 32bit so we use glad
 #include<glfw3.h>	//this lib shuld be included after glad
-#include<iostream>
 #include"keyboard.h"
 #include"resource_manager.h"
 #include"renderer.h"
-#define CHECK_INIT() if(!isInit){\
-	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate game not initialized"<<std::endl;\
-	__debugbreak();}
+#include"level.h"
+#include"check.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -15,6 +13,7 @@ static int init_screen_height = 600;
 static int screen_width;
 static int screen_height;
 static bool isInit = false;
+static Level level(0);
 
 static GLFWwindow* window = nullptr;
 
@@ -65,6 +64,7 @@ Game& Game:: get_instance()
 
 void Game::init()
 {
+	ASSERT_LOG(!isInit, "ERROR::GAME: game should not be initialized more times");
 	isInit = true;
 
 	window = gl_init();
@@ -88,18 +88,47 @@ void Game::init()
 	ResourceManager::init();
 	Renderer::init();
 
-	std::cout << "Game is initialized" << std::endl;
+	level.init(PROJECT_DIR"/assets/levels/level_1.lvl", init_screen_width, 
+		init_screen_height/2);
+	level.log_renderer();
 }
 
 void Game::run()
 {
-	CHECK_INIT();
-	std::cout << "Game is running" << std::endl;
+	ASSERT_LOG(isInit, "ERROR::GAME: " << __FUNCTION__ << " operate game not initialized");
+
+	// use frame time to make it smooth
+	GLfloat deltaTime = 0.0f;
+	GLfloat lastTime = 0.0f;
+
+	//60hz it will change the time the loop spend
+	glfwSwapInterval(1);	
+
+	while (!glfwWindowShouldClose(window))
+	{
+		// calculate frame time
+		GLfloat currentTime = (GLfloat)glfwGetTime();
+		deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+
+		// trigger the events such as mouse and keyboard
+		glfwPollEvents();
+
+		////处理输入
+		//breakout.princessInput(deltaTime);	//处理用户输入
+		//breakout.update(deltaTime);		//更新游戏状态
+
+		Renderer::render(init_screen_width, init_screen_height);
+
+		// swap the two buffers
+		glfwSwapBuffers(window);
+	}
 }
 
 Game::~Game()
 {
+	level.clear();
 	ResourceManager::clear();
 	Renderer::clear();
-	std::cout << "Game is deleted" << std::endl;
+	glfwTerminate();
 }

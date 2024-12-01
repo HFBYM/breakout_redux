@@ -1,16 +1,26 @@
 #include"texture.h"
-#include<iostream>
+#include"check.h"
 #include<glad.h>
+#define CHECK_STATUS() ASSERT_LOG(isGenerate, "ERROR::TEXTURE: function " << __FUNCTION__ << " uses ungenerated texture " << name.getStr());\
+ASSERT_LOG(!isClear, "ERROR::TEXTURE: function " << __FUNCTION__ << " uses ungenerated texture "<< name.getStr())
 
-Texture2D::Texture2D(const char* name, unsigned int inFormat, unsigned int imaFormat)
+Texture2D::Texture2D(const mString & name, unsigned int inFormat, unsigned int imaFormat)
 	:internal_format(inFormat),image_format(imaFormat), wrap_t(GL_REPEAT), wrap_s(GL_REPEAT), 
 	filter_max(GL_LINEAR), filter_min(GL_LINEAR), name(name)
 {
 	glGenTextures(1, &this->id);
 }
 
-void Texture2D::generate(unsigned int width, unsigned int height, unsigned char* data) 
+Texture2D::~Texture2D()
 {
+	ASSERT_LOG(isClear, "ERROR::TEXTURE: texture " << name.getStr() << " isn't clear before distruction ");
+}
+
+void Texture2D::generate(unsigned int width, unsigned int height, unsigned char* data)
+{
+	ASSERT_LOG(!isGenerate, "ERROR::TEXTURE: texture " << name.getStr() << " is generated one more time");
+	isGenerate = true;
+	CHECK_STATUS();
 	this->width = width;
 	this->height = height;
 	glBindTexture(GL_TEXTURE_2D, this->id);
@@ -23,25 +33,16 @@ void Texture2D::generate(unsigned int width, unsigned int height, unsigned char*
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->filter_min);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->filter_max);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	isGenerate = true;
 }
 void Texture2D::bind() const
 {
-	if (!isGenerate)
-	{
-		std::cout << "ERROR::TEXTURE: bind texture " << name << " which isn't generated" << std::endl;
-		__debugbreak();
-	}
+	CHECK_STATUS();
 	glBindTexture(GL_TEXTURE_2D, this->id);
 }
 
 void Texture2D::clear()
 {
-	if (!isGenerate)
-	{
-		std::cout << "ERROR::TEXTURE: clear texture " << name << " which isn't generated" << std::endl;
-		__debugbreak();
-	}
+	CHECK_STATUS();
+	isClear = true;
 	glDeleteTextures(1, &this->id);
-	isGenerate = false;
 }

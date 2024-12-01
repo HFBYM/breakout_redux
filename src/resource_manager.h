@@ -1,4 +1,5 @@
 #pragma once
+class mString;
 class Shader;
 class Texture2D;
 
@@ -9,11 +10,14 @@ private:
 	ResourceManager() = default;
 	~ResourceManager() = default;
 public:
+	/// @brief it should be initialized once only
 	static void init();
 
-	/// @brief clear all the shaders and textures when program terminated
+	/// @brief clear all the shaders and textures when program terminated and should clear once only
 	static void clear();
 	
-	static Shader& getShader(const char* name);
-	static Texture2D& getTexture(const char* name);
+	static mString readFile(const mString& file);
+
+	static Shader& getShader(const mString& name);
+	static Texture2D& getTexture(const mString& name);
 };

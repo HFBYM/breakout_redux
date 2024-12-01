@@ -1,34 +1,35 @@
 #include"renderer.h"
 #include"glad.h"
 #include<map>
-#include<iostream>
 #include"resource_manager.h"
 #include"shader.h"
 #include"texture.h"
 #include<gtc\type_ptr.hpp>
 #include<gtc/matrix_transform.hpp>
+#include"mString.h"
+#include"check.h"
+#include"debug.h"
+#define CHECK_STATUS() ASSERT_LOG(isInit, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer not initialized");\
+    ASSERT_LOG(!isClear, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer cleared")
 
-#define CHECK_STATUS() if(!isInit){\
-    std::cout << "ERROR::RENDERER: function "<<__FUNCTION__<<" uses renderer not initialized"\
-    << std::endl;\
-    __debugbreak();}\
-    if(isClear){\
-    std::cout << "ERROR::RENDERER: function "<<__FUNCTION__<<" uses renderer cleared" << std::endl;\
-    __debugbreak();}
-
+//??logger
 struct LogData
 {
-    const char* shader_name;
-    const char* texture_name;
-    glm::vec2 pos, size;
+    mString shader_name;
+    mString texture_name;
+    const glm::vec2& pos;       
+    glm::vec2 size;
     float rotate;
     glm::vec3 color;
+    LogData(const mString& shader_name, const mString& texture, const glm::vec2& pos, 
+        const glm::vec2& size, float rotate, const glm::vec3& color):shader_name(shader_name), 
+        texture_name(texture), pos(pos), size(size), rotate(rotate), color(color){ }
 };
 
 /// @brief there is only one va globally
 static GLuint va;
 static bool isInit = false, isClear = false;
-static std::map<const char*, std::map<unsigned int, LogData>> log_datas;
+static std::map<mString, std::map<unsigned int, LogData*>> log_datas;
 
 void Renderer::init()
 {
@@ -74,13 +75,18 @@ void Renderer::init()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Renderer::render()
+void Renderer::render(unsigned int width, unsigned int height)
 {
+    Check();
     CHECK_STATUS();
+    // set the color to clear the color buffer and avoid overflowing
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     for (auto& i : log_datas["Brick"])
     {
-        LogData temp = i.second;
-        ResourceManager::getShader(temp.shader_name).use();     //??优化
+        const LogData& temp = *i.second;
+        ResourceManager::getShader(temp.shader_name).use();     //??优化按照着色器分类
 
         // first move, then rotate, scale at last
         glm::mat4 model;
@@ -98,6 +104,13 @@ void Renderer::render()
         ResourceManager::getShader(temp.shader_name).setUniform("model", model);
         ResourceManager::getShader(temp.shader_name).setUniform("spriteColor", temp.color);
 
+
+        glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
+	        static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
+        ResourceManager::getShader("sprite").use().setUniform("image", 0);	
+        ResourceManager::getShader("sprite").use().setUniform("proj", proj);	
+
+
         // bind the texture to slot 0
         glActiveTexture(GL_TEXTURE0);   
         ResourceManager::getTexture(temp.texture_name).bind();
@@ -105,6 +118,7 @@ void Renderer::render()
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glBindVertexArray(0);
     }
+    Check();
 }
 
 void Renderer::clear()
@@ -113,18 +127,24 @@ void Renderer::clear()
     isClear = true;
     glDeleteVertexArrays(1, &va);
     for (auto& i : log_datas)
+    {
+        for (auto& j : i.second)
+            if (j.second)
+                delete j.second;
         i.second.clear();
+    }
     log_datas.clear();
 }
 
-void Renderer::log(const char* id_name, unsigned int id_num, const char* shader_name,
-    const char* texture, glm::vec2 pos, glm::vec2 size, float rotate, glm::vec3 color)
+void Renderer::log(const mString& id_name, unsigned int id_num, const mString& shader_name,
+    const mString& texture, const glm::vec2& pos, const glm::vec2& size, float rotate,
+    const glm::vec3& color)
 {
     CHECK_STATUS();
-    log_datas[id_name][id_num] = { shader_name, texture, pos, size, rotate, color };
+    log_datas[id_name][id_num] = new LogData({ shader_name, texture, pos, size, rotate, color });
 }
 
-void Renderer::detach(const char* id_name, unsigned int id_num)
+void Renderer::detach(const mString& id_name, unsigned int id_num)
 {
     CHECK_STATUS();
     log_datas[id_name].erase(id_num);

@@ -1,39 +1,30 @@
 #include"resource_manager.h"
 #include<fstream>
 #include<sstream>
-#include<string>
-#include<iostream>
 #include<stb.image.h>
 #include<map>
 #include<glad.h>
 #include"shader.h"
 #include"texture.h"
+#include"mString.h"
+#include"check.h"
 // lib for math
 //#include<glm.hpp>
 //#include<gtc\type_ptr.hpp>
 //#include<gtc/matrix_transform.hpp>
-#define CHECK_STATUS() if(!isInit){\
-	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate resource manager not initialized"<<std::endl;\
-	__debugbreak();}\
-	if(isClear){\
-	std::cout<<"ERROR::RESOURCE: "<<__FUNCTION__<<" operate resource manager cleared"<<std::endl;\
-	__debugbreak();}
+#define CHECK_STATUS() ASSERT_LOG(isInit, "ERROR::RESOURCE: " << __FUNCTION__ << " operate resource manager not initialized"); \
+	ASSERT_LOG(!isClear, "ERROR::RESOURCE: " << __FUNCTION__ << " operate resource manager cleared")
 
 //initialize the static virants
-static std::map<const char*, Texture2D*> textures;
-static std::map<const char*, Shader*> shaders;
+static std::map<mString, Texture2D*> textures;
+static std::map<mString, Shader*> shaders;
 static bool isInit = false;
 static bool isClear = false;
 
-static void loadShader(const char* file, const char* name)
+static void loadShader(const mString& file, const mString& name)
 {
-	std::ifstream ifs(file);
-	if (!ifs.is_open())
-	{
-		std::cout << "ERROR::SHADER: failed to open " << file << std::endl;
-		__debugbreak();
-	}
-
+	std::ifstream ifs(file.getStr());
+	ASSERT_LOG(ifs.is_open(), "ERROR::SHADER: failed to open " << name.getStr());
 	std::string line;
 	std::stringstream ss[2];
 
@@ -65,12 +56,9 @@ static void loadShader(const char* file, const char* name)
 		//remember the endl which shader needs but ignored by getline
 		ss[type] << line << std::endl;
 	}
-	if (!v_found || !f_found)
-	{
-		std::cout << "ERROR::SHADER: syntex error: " << (v_found ? NULL : "no vertex shader ")
-			<< (f_found ? NULL : "no fragment shader ") << "named: " << name << " in\t" << file << std::endl;
-		__debugbreak();
-	}
+	ASSERT_LOG(v_found&& f_found, "ERROR::SHADER: syntex error: " << (v_found ? NULL : "no vertex shader ")
+		<< (f_found ? NULL : "no fragment shader ") << "named: " << name.getStr() << " in\t"
+		<< file.getStr());
 	shaders[name] = new Shader(name);
 	shaders[name]->compile(ss[VERTEX].str().c_str(), ss[FRAGMENT].str().c_str());
 }
@@ -79,7 +67,7 @@ static void loadShader(const char* file, const char* name)
 /// @param file filepath
 /// @param has_alpha decides whether or not this texture has alpha channel
 /// @param name the texture name
-static void loadTexture(const char* file, bool has_alpha, const char* name)
+static void loadTexture(const mString& file, bool has_alpha, const mString& name)
 {
 	textures[name] = new Texture2D(name, has_alpha ? GL_RGBA : GL_RGB, has_alpha ? GL_RGBA : GL_RGB);
 
@@ -90,7 +78,7 @@ static void loadTexture(const char* file, bool has_alpha, const char* name)
 	int width, height;
 
 	// the forth parm returns the channels of the image which is of no use
-	unsigned char* image = stbi_load(file, &width, &height, 0,
+	unsigned char* image = stbi_load(file.getStr(), &width, &height, 0,
 		textures[name]->getImage_Format() == GL_RGB ? 3 : 4);
 
 	textures[name]->generate(width, height, image);
@@ -99,43 +87,29 @@ static void loadTexture(const char* file, bool has_alpha, const char* name)
 	stbi_image_free(image);
 }
 
-Shader& ResourceManager::getShader(const char* name)
+Shader& ResourceManager::getShader(const mString& name)
 {
 	CHECK_STATUS();
-	if (shaders.find(name) != shaders.end())
-		return *shaders[name];
-	else
-	{
-		std::cout << "ERROR::GET_SHADER: failed to find the shader " << name << std::endl;
-		__debugbreak();
-		return *shaders[name];
-	}
+	ASSERT_LOG(shaders.find(name) != shaders.end(),
+		"ERROR::GET_SHADER: failed to find the shader " << name.getStr());
+	return *shaders[name];
 }
-Texture2D& ResourceManager::getTexture(const char* name)
+Texture2D& ResourceManager::getTexture(const mString& name)
 {
 	CHECK_STATUS();
-	if (textures.find(name) != textures.end())
-		return *textures[name];
-	else
-	{
-		std::cout << "ERROR::GET_TEXTURE: failed to find the texture " << name << std::endl;
-		__debugbreak();
-		return *textures[name];
-	}
+	ASSERT_LOG(textures.find(name) != textures.end(),
+		"ERROR::GET_TEXTURE: failed to find the texture " << name.getStr());
+	return *textures[name];
 }
 void ResourceManager::init()
 {
+	ASSERT_LOG(!isInit, "ERROR::RESOURCE: resource manager should be initialized only once");
 	isInit = true;
+	CHECK_STATUS();
 	//??json文件管理
 	//load in shaders
 	loadShader(PROJECT_DIR"/assets/shaders/postProcess.shader", "postProcess");
 	loadShader(PROJECT_DIR"/assets/shaders/sprite.shader", "sprite");
-
-	////正射投影即可 左上角是(0,0)与屏幕坐标对应	旋转中心在左上角 上下翻转同时纹理也上下反转???
-	//glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(this->init_screen_width),
-	//	static_cast<GLfloat>(this->init_screen_height), 0.0f, -1.0f, 1.0f);
-	//ResourceManager::getShader("sprite").use().setInteger("image", 0);	//设定采样槽
-	//ResourceManager::getShader("sprite").use().setMatrix4("proj", proj);	//设置正射投影
 
 	loadShader(PROJECT_DIR"/assets/shaders/particle.shader", "particle");
 	//ResourceManager::getShader("particle").use().setInteger("sprite", 0);	//设定采样槽
@@ -156,7 +130,6 @@ void ResourceManager::init()
 	loadTexture(PROJECT_DIR"/assets/textures/powerup_passthrough.png", false, "tex_pass");
 	loadTexture(PROJECT_DIR"/assets/textures/powerup_speed.png", false, "tex_speed");
 	loadTexture(PROJECT_DIR"/assets/textures/powerup_sticky.png", false, "tex_sticky");
-
 }
 void ResourceManager::clear()
 {
@@ -174,4 +147,19 @@ void ResourceManager::clear()
 	}
 	shaders.clear();
 	textures.clear();
+}
+
+mString ResourceManager::readFile(const mString& file)
+{
+	CHECK_STATUS();
+	std::ifstream ifs(file.getStr());
+	ASSERT_LOG(ifs.is_open(), "ERROR::FILE: failed to open " << file.getStr());
+
+	std::string line;
+	std::stringstream ss;
+
+	while (std::getline(ifs, line))
+		ss << line << std::endl;
+
+	return ss.str().c_str();
 }
