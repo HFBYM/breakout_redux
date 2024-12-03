@@ -6,6 +6,7 @@
 #include"renderer.h"
 #include"level.h"
 #include"check.h"
+#include"player.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -14,6 +15,7 @@ static int screen_width;
 static int screen_height;
 static bool isInit = false;
 static Level level(0);
+static Player* player = nullptr;
 
 static GLFWwindow* window = nullptr;
 
@@ -28,23 +30,14 @@ static GLFWwindow* gl_init()
 	//create the window hint and check
 	GLFWwindow* window = glfwCreateWindow(init_screen_width, init_screen_height, 
 		"Breakout", nullptr, nullptr);
-	if (!window)
-	{
-		std::cout << "ERROR::WINDOW: fail to create the window" << std::endl;
-		glfwTerminate();
-		__debugbreak();
-	}
+	ASSERT_LOG(window, "ERROR::WINDOW: fail to create the window");
 
 	//make this window the current context
 	glfwMakeContextCurrent(window);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))	//glad初始化方式与glew不一样
-	{
-		std::cout << "ERROR::GLAD: faid to initialize glad" << std::endl;
-		glfwTerminate();
-		__debugbreak();
-	}
-	//Check();
+	//it's different from glew
+	ASSERT_LOG(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "ERROR::GLAD: faid to initialize glad");
+
 	return window;
 }
 
@@ -91,6 +84,10 @@ void Game::init()
 	level.init(PROJECT_DIR"/assets/levels/level_1.lvl", init_screen_width, 
 		init_screen_height/2);
 	level.log_renderer();
+
+	player = new Player(init_screen_width, init_screen_height);
+	player->init();
+	player->log_all();
 }
 
 void Game::run()
@@ -119,7 +116,7 @@ void Game::run()
 		//breakout.update(deltaTime);		//更新游戏状态
 
 		Renderer::render(init_screen_width, init_screen_height);
-
+		level.Rotate();
 		// swap the two buffers
 		glfwSwapBuffers(window);
 	}
@@ -128,7 +125,9 @@ void Game::run()
 Game::~Game()
 {
 	level.clear();
+	player->detach_all();
 	ResourceManager::clear();
 	Renderer::clear();
+	KeyBoard::clear();
 	glfwTerminate();
 }

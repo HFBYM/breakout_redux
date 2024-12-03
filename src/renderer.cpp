@@ -18,11 +18,11 @@ struct LogData
     mString shader_name;
     mString texture_name;
     const glm::vec2& pos;       
-    glm::vec2 size;
-    float rotate;
+    const glm::vec2& size;
+    const float& rotate;
     glm::vec3 color;
     LogData(const mString& shader_name, const mString& texture, const glm::vec2& pos, 
-        const glm::vec2& size, float rotate, const glm::vec3& color):shader_name(shader_name), 
+        const glm::vec2& size, float& rotate, const glm::vec3& color):shader_name(shader_name), 
         texture_name(texture), pos(pos), size(size), rotate(rotate), color(color){ }
 };
 
@@ -118,6 +118,42 @@ void Renderer::render(unsigned int width, unsigned int height)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glBindVertexArray(0);
     }
+    for (auto& i : log_datas["Player"])
+    {
+        const LogData& temp = *i.second;
+        ResourceManager::getShader(temp.shader_name).use();
+
+        // first move, then rotate, scale at last
+        glm::mat4 model;
+        model = glm::translate(model, glm::vec3(temp.pos, 0.0f));
+
+        // make it rotate to the middle
+        model = glm::translate(model, glm::vec3(0.5 * temp.size.x, 0.5 * temp.size.y, 0.0f));
+        model = glm::rotate(model, temp.rotate, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        // move it back
+        model = glm::translate(model, glm::vec3(-0.5f * temp.size.x, -0.5f * temp.size.y, 0.0f));
+
+        model = glm::scale(model, glm::vec3(temp.size, 1.0f));
+
+        ResourceManager::getShader(temp.shader_name).setUniform("model", model);
+        ResourceManager::getShader(temp.shader_name).setUniform("spriteColor", temp.color);
+
+
+        glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
+            static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
+        ResourceManager::getShader("sprite").use().setUniform("image", 0);
+        ResourceManager::getShader("sprite").use().setUniform("proj", proj);
+
+
+        // bind the texture to slot 0
+        glActiveTexture(GL_TEXTURE0);
+        ResourceManager::getTexture(temp.texture_name).bind();
+        glBindVertexArray(va);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+        glBindVertexArray(0);
+    }
+
     Check();
 }
 
@@ -137,7 +173,7 @@ void Renderer::clear()
 }
 
 void Renderer::log(const mString& id_name, unsigned int id_num, const mString& shader_name,
-    const mString& texture, const glm::vec2& pos, const glm::vec2& size, float rotate,
+    const mString& texture, const glm::vec2& pos, const glm::vec2& size, float& rotate,
     const glm::vec3& color)
 {
     CHECK_STATUS();

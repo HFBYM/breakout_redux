@@ -20,7 +20,7 @@ public:
 
 	/// @brief it can clear only once
 	void clear();
-
+	void Rotate();
 	//??
 	//bool isCompleted();	//检测关卡是否完成 即所有可被破坏的都破坏完
 private:

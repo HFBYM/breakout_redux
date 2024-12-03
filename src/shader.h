@@ -1,5 +1,6 @@
 #pragma once
 #include "mString.h"
+// ±‡“Î ±ºÏ≤Èuniform??
 class Shader
 {
 public:

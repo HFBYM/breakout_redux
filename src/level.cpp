@@ -103,3 +103,11 @@ void Level::clear()
 	for (auto& i : bricks)
 		i.detach_all();
 }
+
+void Level::Rotate()
+{
+	for (auto& i : bricks)
+	{
+		i.Rotate();
+	}
+}

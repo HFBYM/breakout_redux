@@ -1,8 +1,8 @@
 #pragma once
-#include"object.h"
+#include"renderObj.h"
 #include"mString.h"
 #include"glm.hpp"
-class Brick:public Object
+class Brick:public RenderObj
 {
 public:
 	enum BrickType {
@@ -10,26 +10,16 @@ public:
 	};
 
 	Brick(const glm::vec2& pos, const glm::vec2& size, const mString& tex, BrickType type, 
-		bool isSolid = false, glm::vec3 color = glm::vec3(1.0f));
+		bool isSolid = false, glm::vec3 color = glm::vec3(1.0f)) :Object(pos,size,"Brick"),
+		RenderObj(tex, "sprite", color), type(type), isSolid(isSolid){ }
 
 	/// @brief when a brick is distructed it should have cleaned all the logging
-	~Brick();
+	~Brick() = default;
 
-	/// @brief user can log and detach any times
-	void log_renderer();
-	void detach_renderer();
-
-	void log_all();
-	void detach_all();
+	virtual void log_all();
+	virtual void detach_all();
 private:
 	BrickType type = NONE;
 
 	bool isSolid = false;
-
-	///??变量与渲染器打包
-	mString tex;
-	glm::vec3 color = glm::vec3(0.0f);
-	float rotate = 0.0f;
-	/// @brief 多个其他变量??
-	bool is_log_renderer = false;
 };

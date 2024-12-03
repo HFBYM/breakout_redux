@@ -94,7 +94,6 @@ void Shader::setUniform(const mString& name, const T& value)
     {
         this->use();
         glUniform1f(pos, value);
-
     }
     else if constexpr (std::is_same_v<T, int>)
     {
