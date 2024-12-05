@@ -21,10 +21,10 @@ public:
 	/// @brief it can clear only once
 	void clear();
 	void Rotate();
-	//??
+
 	//bool isCompleted();	//检测关卡是否完成 即所有可被破坏的都破坏完
 private:
-	//???动态加载关卡
+	//TODO动态加载关卡
 	std::vector<Brick> bricks;
 
 	// lives for each level

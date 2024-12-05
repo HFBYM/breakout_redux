@@ -7,6 +7,7 @@
 #include"level.h"
 #include"check.h"
 #include"player.h"
+#include"movement.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -86,7 +87,6 @@ void Game::init()
 	level.log_renderer();
 
 	player = new Player(init_screen_width, init_screen_height);
-	player->init();
 	player->log_all();
 }
 
@@ -116,6 +116,8 @@ void Game::run()
 		//breakout.update(deltaTime);		//¸üĞÂÓÎÏ·×´Ì¬
 
 		Renderer::render(init_screen_width, init_screen_height);
+		Movement::work(deltaTime);
+
 		level.Rotate();
 		// swap the two buffers
 		glfwSwapBuffers(window);

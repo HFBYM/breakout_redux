@@ -13,6 +13,8 @@ void KeyBoard:: key_callback(GLFWwindow* window, int key, int scancode, int acti
 	// close the window when esc pressed
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	else if (key == GLFW_KEY_P && action == GLFW_PRESS)
+		__debugbreak();
 	else if (action == GLFW_PRESS || action == GLFW_RELEASE)
 		for (auto& i : id_obj_func)
 		{
@@ -23,7 +25,8 @@ void KeyBoard:: key_callback(GLFWwindow* window, int key, int scancode, int acti
 void KeyBoard::log(KeyboardObj& obj, void(KeyboardObj::* func_p)(int, int), unsigned int id)
 {
 	ASSERT_LOG(!isClear, "ERROR::KEYBOARD: " << __FUNCTION__ << "uses keyboard cleared");
-	id_obj_func[id] = std::make_pair(&obj, func_p);
+	if(func_p)
+		id_obj_func[id] = std::make_pair(&obj, func_p);
 }
 
 void KeyBoard::detach(unsigned int id)

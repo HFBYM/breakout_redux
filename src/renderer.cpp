@@ -12,7 +12,7 @@
 #define CHECK_STATUS() ASSERT_LOG(isInit, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer not initialized");\
     ASSERT_LOG(!isClear, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer cleared")
 
-//??logger
+//TODOlogger
 struct LogData
 {
     mString shader_name;
@@ -86,7 +86,7 @@ void Renderer::render(unsigned int width, unsigned int height)
     for (auto& i : log_datas["Brick"])
     {
         const LogData& temp = *i.second;
-        ResourceManager::getShader(temp.shader_name).use();     //??优化按照着色器分类
+        ResourceManager::getShader(temp.shader_name).use();     //TODO优化按照着色器分类
 
         // first move, then rotate, scale at last
         glm::mat4 model;

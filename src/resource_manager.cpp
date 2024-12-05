@@ -106,7 +106,7 @@ void ResourceManager::init()
 	ASSERT_LOG(!isInit, "ERROR::RESOURCE: resource manager should be initialized only once");
 	isInit = true;
 	CHECK_STATUS();
-	//??json文件管理
+	//TODOjson文件管理
 	//load in shaders
 	loadShader(PROJECT_DIR"/assets/shaders/postProcess.shader", "postProcess");
 	loadShader(PROJECT_DIR"/assets/shaders/sprite.shader", "sprite");
