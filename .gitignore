@@ -1,3 +1,4 @@
 # ignore the building directory and the binary file
 /build_cmake
 /bin/Debug
+/bin/Release

@@ -5,8 +5,7 @@ class KeyboardObj:virtual public Object
 protected:
     bool is_log_keyboard = false;
 public:
-    // KeyboardObj():Object("KeyboardObj"){}
-    KeyboardObj() = default;
+    KeyboardObj():Object("KeyboardObj"){}
     ~KeyboardObj();
 
     void log_keyboard();

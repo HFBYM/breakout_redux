@@ -10,7 +10,11 @@ KeyboardObj::~KeyboardObj()
 void KeyboardObj::log_keyboard()
 {
 	if(!is_log_keyboard)
-		KeyBoard::log(*this, &KeyboardObj:: processInput, id_num);
+	{		
+		std::function<void(int, int)> std_func = [this](int key, int action)
+		{ this->processInput(key, action); };
+		KeyBoard::log(std_func,	id_num);
+	}
 	is_log_keyboard = true;
 }
 

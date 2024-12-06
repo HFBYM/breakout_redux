@@ -16,7 +16,7 @@ public:
 
 	/// @brief this let the RenderObj derived class have instance
 	RenderObj(const mString& tex, const mString& shader, glm::vec3 color = glm::vec3(1.0f), float rotate = 0.0f) :
-		color(color), tex(tex), shader(shader), rotate(rotate){ }
+		color(color), tex(tex), shader(shader), rotate(rotate), Object("RenderObj") { }
 
 	void Rotate() { static unsigned int i = 1; rotate += static_cast<float>(i) / 100.0f; }
 

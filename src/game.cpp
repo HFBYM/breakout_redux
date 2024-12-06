@@ -116,7 +116,9 @@ void Game::run()
 		//breakout.update(deltaTime);		//¸üÐÂÓÎÏ·×´Ì¬
 
 		Renderer::render(init_screen_width, init_screen_height);
-		Movement::work(deltaTime);
+
+		Movement::move(deltaTime);
+		Movement::collision();
 
 		level.Rotate();
 		// swap the two buffers
@@ -128,8 +130,10 @@ Game::~Game()
 {
 	level.clear();
 	player->detach_all();
+	delete player;
 	ResourceManager::clear();
 	Renderer::clear();
 	KeyBoard::clear();
+	Movement::clear();
 	glfwTerminate();
 }

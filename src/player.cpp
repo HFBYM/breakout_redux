@@ -9,22 +9,20 @@ static CollisionObj** player_range_p = nullptr;
 Player::Player(unsigned int width, unsigned int height, glm::vec3 color, glm::vec2 size) 
 	:RenderObj("paddle", "sprite", color), init_screen_width(width), init_screen_height(height),Object(glm::vec2((width - size.x) / 2, height - size.y), size, "Player")
 {
-	//if (!player_range_p)
-	//{
-	//	player_range_p = new CollisionObj * [4];
-	//	player_range_p[0] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
-	//		glm::vec2(0.0f, init_screen_height / 2));
-	//	player_range_p[1] = new CollisionObj("Player_Range", glm::vec2(init_screen_width, init_screen_height / 2),
-	//		glm::vec2(0.0f, init_screen_height / 2));
-	//	player_range_p[2] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
-	//		glm::vec2(init_screen_width, 0.0f));
-	//	player_range_p[3] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height),
-	//		glm::vec2(init_screen_width, 0.0f));
-	//	player_range_p[0]->log_collision();
-	//	player_range_p[1]->log_collision();
-	//	player_range_p[2]->log_collision();
-	//	player_range_p[3]->log_collision();
-	//}
+	if (!player_range_p)
+	{
+		player_range_p = new CollisionObj * [4];
+		player_range_p[0] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
+			glm::vec2(0.0f, init_screen_height / 2));
+		player_range_p[1] = new CollisionObj("Player_Range", glm::vec2(init_screen_width, init_screen_height / 2),
+			glm::vec2(0.0f, init_screen_height / 2));
+		player_range_p[2] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
+			glm::vec2(init_screen_width, 0.0f));
+		player_range_p[3] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height),
+			glm::vec2(init_screen_width, 0.0f));
+		for(int i = 0; i < 4; i++)
+			player_range_p[i]->log_collision();
+	}
 }
 Player::~Player()
 {
@@ -48,7 +46,7 @@ void Player::log_all()
 	log_renderer();
 	log_keyboard();
 	log_move();
-	// log_collision();
+	log_collision();
 }
 
 void Player::detach_all()
@@ -56,7 +54,7 @@ void Player::detach_all()
 	detach_renderer();
 	detach_keyboard();
 	detach_move();
-	// detach_collision();
+	detach_collision();
 }
 static float v = 550.0f;
 static glm::vec2 input_v = glm::vec2(0.0f);
@@ -85,3 +83,14 @@ void Player::processInput(int key, int action)
 		velocity = glm::vec2(0.0f);
 }
 
+void Player::do_collision(const mString &message)
+{
+	if(message == "up")
+		pos.y = init_screen_height / 2.0f;
+	else if(message == "down")
+		pos.y = init_screen_height - size.y;
+	else if(message == "left")
+		pos.x = 0;
+	else if(message == "right")
+		pos.x = init_screen_width - size.x;
+}

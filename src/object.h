@@ -2,7 +2,7 @@
 #include"glm.hpp"
 #include"mString.h"
 
-/// @brief the base class for all objects and it's a abstract class
+/// @brief the base class for all objects and it's not a abstract class
 class Object
 {
 public:
@@ -14,11 +14,10 @@ public:
 		pos(pos), size(size), id_name(id_name), id_num(id_num){ }
 
 	/// @brief this is a special constructor for some class or object which has no size or pos
-	// Object(const mString& type) : id_name(type),id_num(getId_num()) {}
-	Object() = default;
+	Object(const mString& type) : id_name(type),id_num(getId_num()) {}
 
-	virtual void log_all() = 0;
-	virtual void detach_all() = 0;
+	virtual void log_all() {}
+	virtual void detach_all() {}
 protected:
 	/// @brief pos is the leftdown point of the object
 	glm::vec2 pos = glm::vec2(0.0f);

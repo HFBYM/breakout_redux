@@ -1,3 +1,6 @@
 {
-    "Codegeex.Comment.LanguagePreference": "English"
+    "Codegeex.Comment.LanguagePreference": "English",
+    "files.associations": {
+        "new": "cpp"
+    }
 }

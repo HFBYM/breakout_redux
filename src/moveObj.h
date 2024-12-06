@@ -9,7 +9,7 @@ protected:
     
 public:
     /// @brief this constructor is used to create its derived class
-    MoveObj(glm::vec2 v = glm::vec2(0.0f)):velocity(v){}
+    MoveObj(glm::vec2 v = glm::vec2(0.0f)):velocity(v),Object("MoveObj"){}
 
     /// @brief this constructor is used to create independent MoveObj
     MoveObj(const mString& id_name, const glm::vec2& pos, const glm::vec2& size):Object(pos,size,id_name){}

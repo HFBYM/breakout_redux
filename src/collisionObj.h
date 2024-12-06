@@ -9,7 +9,7 @@ public:
     CollisionObj(const mString& id_name, const glm::vec2& pos, const glm::vec2& size):Object(pos,size,id_name){}
 
     /// @brief this let CollisionObj derived class have instance of Object
-    //CollisionObj():Object("CollisionObj") {}
+    CollisionObj():Object("CollisionObj") {}
     ~CollisionObj();
 
     void log_collision();

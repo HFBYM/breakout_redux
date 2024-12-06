@@ -9,9 +9,13 @@ CollisionObj::~CollisionObj()
 
 void CollisionObj::log_collision()
 {
-    if(is_log_collision)
-		Movement::log_collision(id_name,*this, &CollisionObj::do_collision, id_num, pos, size);
-	is_log_collision = true;
+    if(!is_log_collision)
+    {
+      std::function<void(const mString &)> func = [this](const mString &message)
+      { this->do_collision(message); };
+      Movement::log_collision(id_name, func, id_num, pos, size);
+    }	
+  is_log_collision = true;
 }
 
 void CollisionObj::detach_collision()

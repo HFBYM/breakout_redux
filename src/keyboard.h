@@ -1,15 +1,19 @@
 # pragma once
+#include<functional>
 struct GLFWwindow;
 class KeyboardObj;
 /// @brief store and process the keyboard input
 class KeyBoard
 {
 public:
+	/// @brief this function type is used for callback
+	using FuncType = std::function<void(int,int)>;
+
 	/// @brief mention	that it won't work when more than 3 keys pressed, it might be due to GLFW
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 	/// @brief set the func_p as one of the callback
-	static void log(KeyboardObj& obj, void(KeyboardObj::*func_p)(int, int), unsigned int id);
+	static void log(FuncType func, unsigned int id);
 
 	static void detach(unsigned int id);
 
