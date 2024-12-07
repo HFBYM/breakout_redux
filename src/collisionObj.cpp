@@ -1,5 +1,5 @@
 #include"collisionObj.h"
-#include"movement.h"
+#include"collision.h"
 #include"check.h"
 CollisionObj::~CollisionObj()
 {
@@ -13,7 +13,7 @@ void CollisionObj::log_collision()
     {
       std::function<void(const mString &)> func = [this](const mString &message)
       { this->do_collision(message); };
-      Movement::log_collision(id_name, func, id_num, pos, size);
+      Collision::log(id_name, func, id_num, pos, size);
     }	
   is_log_collision = true;
 }
@@ -21,6 +21,6 @@ void CollisionObj::log_collision()
 void CollisionObj::detach_collision()
 {
     if(is_log_collision)
-		Movement::detach_collision(id_name, id_num);
+		Collision::detach(id_name, id_num);
 	is_log_collision = false;
 }

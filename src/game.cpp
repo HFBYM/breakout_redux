@@ -8,6 +8,8 @@
 #include"check.h"
 #include"player.h"
 #include"movement.h"
+#include"collision.h"
+#include"ball.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -17,6 +19,7 @@ static int screen_height;
 static bool isInit = false;
 static Level level(0);
 static Player* player = nullptr;
+static Ball* ball = nullptr;
 
 static GLFWwindow* window = nullptr;
 
@@ -88,6 +91,10 @@ void Game::init()
 
 	player = new Player(init_screen_width, init_screen_height);
 	player->log_all();
+
+	ball = new Ball(init_screen_width, init_screen_height);
+	ball->log_all();
+	ball->setPos(player->getPos(),player->getSize());
 }
 
 void Game::run()
@@ -118,7 +125,7 @@ void Game::run()
 		Renderer::render(init_screen_width, init_screen_height);
 
 		Movement::move(deltaTime);
-		Movement::collision();
+		Collision::collision();
 
 		level.Rotate();
 		// swap the two buffers
@@ -131,6 +138,10 @@ Game::~Game()
 	level.clear();
 	player->detach_all();
 	delete player;
+	ball->detach_all();
+	delete ball;
+	
+	Collision::clear();
 	ResourceManager::clear();
 	Renderer::clear();
 	KeyBoard::clear();

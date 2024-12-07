@@ -17,6 +17,9 @@ public:
 
     /// @brief control the range of the player
     virtual void do_collision(const mString& message);
+
+	inline glm::vec2 getPos() { return pos; }
+	inline glm::vec2 getSize() { return size; }
 private:
 	unsigned int init_screen_width = 0;
 	unsigned int init_screen_height = 0;
