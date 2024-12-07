@@ -11,13 +11,13 @@ RenderObj::~RenderObj()
 void RenderObj::log_renderer()
 {
 	if (!is_log_renderer)
-		Renderer::log(id_name, id_num, shader, tex, pos, size, rotate, color);
+		Renderer::logger.log(id_name, id_num, Renderer::LogData{shader, tex, pos, size, rotate, color});
 	is_log_renderer = true;
 }
 
 void RenderObj::detach_renderer()
 {
 	if (is_log_renderer)
-		Renderer::detach(id_name, id_num);
+		Renderer::logger.detach(id_name, id_num);
 	is_log_renderer = false;
 }

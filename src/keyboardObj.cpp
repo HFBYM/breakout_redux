@@ -11,9 +11,9 @@ void KeyboardObj::log_keyboard()
 {
 	if(!is_log_keyboard)
 	{		
-		std::function<void(int, int)> std_func = [this](int key, int action)
+		std::function<void(int, int)> func = [this](int key, int action)
 		{ this->processInput(key, action); };
-		KeyBoard::log(std_func,	id_num);
+		KeyBoard::logger.log(id_name,id_num,{func});
 	}
 	is_log_keyboard = true;
 }
@@ -21,6 +21,6 @@ void KeyboardObj::log_keyboard()
 void KeyboardObj::detach_keyboard()
 {
 	if (is_log_keyboard)
-		KeyBoard::detach(id_num);
+		KeyBoard::logger.detach(id_name, id_num);
 	is_log_keyboard = false;
 }

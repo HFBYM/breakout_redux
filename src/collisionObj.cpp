@@ -13,7 +13,7 @@ void CollisionObj::log_collision()
     {
       std::function<void(const mString &)> func = [this](const mString &message)
       { this->do_collision(message); };
-      Collision::log(id_name, func, id_num, pos, size);
+      Collision::logger.log(id_name, id_num, Collision::CollisionData{pos, size, func});
     }	
   is_log_collision = true;
 }
@@ -21,6 +21,6 @@ void CollisionObj::log_collision()
 void CollisionObj::detach_collision()
 {
     if(is_log_collision)
-		Collision::detach(id_name, id_num);
+		Collision::logger.detach(id_name, id_num);
 	is_log_collision = false;
 }

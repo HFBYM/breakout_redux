@@ -1,35 +1,21 @@
 #include"renderer.h"
 #include"glad.h"
-#include<map>
 #include"resource_manager.h"
 #include"shader.h"
 #include"texture.h"
 #include<gtc\type_ptr.hpp>
 #include<gtc/matrix_transform.hpp>
-#include"mString.h"
 #include"check.h"
 #include"debug.h"
 #define CHECK_STATUS() ASSERT_LOG(isInit, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer not initialized");\
     ASSERT_LOG(!isClear, "ERROR::RENDERER: function " << __FUNCTION__ << " uses renderer cleared")
 
-//TODOlogger
-struct LogData
-{
-    mString shader_name;
-    mString texture_name;
-    const glm::vec2& pos;       
-    const glm::vec2& size;
-    const float& rotate;
-    glm::vec3 color;
-    LogData(const mString& shader_name, const mString& texture, const glm::vec2& pos, 
-        const glm::vec2& size, float& rotate, const glm::vec3& color):shader_name(shader_name), 
-        texture_name(texture), pos(pos), size(size), rotate(rotate), color(color){ }
-};
+static std::map<mString, std::map<unsigned int, Renderer::LogData*>>* log_datas = new std::map<mString, std::map<unsigned int, Renderer::LogData*>>;
+Logger<Renderer::LogData> Renderer::logger(*log_datas);
 
 /// @brief there is only one va globally
 static GLuint va;
 static bool isInit = false, isClear = false;
-static std::map<mString, std::map<unsigned int, LogData*>> log_datas;
 
 void Renderer::init()
 {
@@ -83,7 +69,7 @@ void Renderer::render(unsigned int width, unsigned int height)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (auto& i : log_datas["Brick"])
+    for (auto& i : (*log_datas)["Brick"])
     {
         const LogData& temp = *i.second;
         ResourceManager::getShader(temp.shader_name).use();     //TODO优化按照着色器分类
@@ -118,7 +104,7 @@ void Renderer::render(unsigned int width, unsigned int height)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glBindVertexArray(0);
     }
-    for (auto& i : log_datas["Player"])
+    for (auto& i : (*log_datas)["Player"])
     {
         const LogData& temp = *i.second;
         ResourceManager::getShader(temp.shader_name).use();
@@ -153,7 +139,7 @@ void Renderer::render(unsigned int width, unsigned int height)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glBindVertexArray(0);
     }
-    for (auto& i : log_datas["Ball"])
+    for (auto& i : (*log_datas)["Ball"])
     {
         const LogData& temp = *i.second;
         ResourceManager::getShader(temp.shader_name).use();
@@ -188,9 +174,6 @@ void Renderer::render(unsigned int width, unsigned int height)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         glBindVertexArray(0);
     }
-
-
-    Check();
 }
 
 void Renderer::clear()
@@ -198,26 +181,8 @@ void Renderer::clear()
     CHECK_STATUS();
     isClear = true;
     glDeleteVertexArrays(1, &va);
-    for (auto& i : log_datas)
-    {
-        for (auto& j : i.second)
-            if (j.second)
-                delete j.second;
-        i.second.clear();
-    }
-    log_datas.clear();
-}
-
-void Renderer::log(const mString& id_name, unsigned int id_num, const mString& shader_name,
-    const mString& texture, const glm::vec2& pos, const glm::vec2& size, float& rotate,
-    const glm::vec3& color)
-{
-    CHECK_STATUS();
-    log_datas[id_name][id_num] = new LogData({ shader_name, texture, pos, size, rotate, color });
-}
-
-void Renderer::detach(const mString& id_name, unsigned int id_num)
-{
-    CHECK_STATUS();
-    log_datas[id_name].erase(id_num);
+    logger.clear();
+    if(log_datas)
+        delete log_datas;
+    log_datas = nullptr;
 }

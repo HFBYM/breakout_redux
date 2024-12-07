@@ -1,21 +1,28 @@
 #pragma once
 #include"glm.hpp"
-class mString;
+#include"logger.h"
 class Renderer
 {
 public:
-	static void init();
-	static void render(unsigned int width, unsigned int height);
-	static void clear();
-
-	/// @brief each varient logging will render using its params and it should detach before logging again
-	static void log(const mString& id_name, unsigned int id_num, const mString& shader_name, 
-		const mString& texture, const glm::vec2& pos, const glm::vec2& size, float& rotate, 
-		const glm::vec3& color);
-
-	static void detach(const mString& id_name, unsigned int id_num);
+struct LogData
+{
+    mString shader_name;
+    mString texture_name;
+    const glm::vec2& pos;       
+    const glm::vec2& size;
+    const float& rotate;
+    const glm::vec3& color;
+    LogData(const mString& shader_name, const mString& texture, const glm::vec2& pos, 
+        const glm::vec2& size, float& rotate, const glm::vec3& color):shader_name(shader_name), 
+        texture_name(texture), pos(pos), size(size), rotate(rotate), color(color){ }
+};
 private:
 	Renderer() = delete;
 	~Renderer() = delete;
-	Renderer& operator=(Renderer&) = delete;
+public:
+	static Logger<LogData> logger;
+
+	static void init();
+	static void render(unsigned int width, unsigned int height);
+	static void clear();
 };

@@ -137,14 +137,14 @@ Game::~Game()
 {
 	level.clear();
 	player->detach_all();
-	delete player;
 	ball->detach_all();
+	delete player;
 	delete ball;
-	
+
 	Collision::clear();
 	ResourceManager::clear();
-	Renderer::clear();
-	KeyBoard::clear();
 	Movement::clear();
+	KeyBoard::clear();
+	Renderer::clear();
 	glfwTerminate();
 }

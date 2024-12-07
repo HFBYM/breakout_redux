@@ -10,13 +10,13 @@ MoveObj::~MoveObj()
 void MoveObj::log_move()
 {
 	if (!is_log_move)
-		Movement::log(id_name, id_num, pos, velocity, accelerate);
+		Movement::logger.log(id_name, id_num, {pos, velocity, accelerate});
 	is_log_move = true;
 }
 
 void MoveObj::detach_move()
 {
 	if (is_log_move)
-		Movement::detach(id_name, id_num);
+		Movement::logger.detach(id_name, id_num);
 	is_log_move = false;
 }

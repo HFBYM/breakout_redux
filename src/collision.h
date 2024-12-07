@@ -1,17 +1,23 @@
 #pragma once
 #include<functional>
-#include"mString.h"
+#include"logger.h"
 #include"glm.hpp"
-class CollisionObj;
 class Collision
 {
 private:
-    Collision() = default;
-    ~Collision() = default;
+    Collision() = delete;
+    ~Collision() = delete;
 public:
     using FuncType = std::function<void(const mString &)>;
-    static void log(const mString& type, FuncType func, unsigned int id, glm::vec2& pos, glm::vec2& size);
-    static void detach(const mString& type, unsigned int id_num);
+    struct CollisionData
+    {
+        glm::vec2& pos;
+        glm::vec2& size;
+        FuncType func;
+        CollisionData(glm::vec2& pos, glm::vec2& size, FuncType func):
+            pos(pos), size(size), func(func){}
+    };
+    static Logger<CollisionData> logger;
 
     static void collision();
 
