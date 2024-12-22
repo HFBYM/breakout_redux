@@ -13,7 +13,10 @@ public:
     Logger(std::map<mString, std::map<unsigned int, T *>> &data) : data(data) {}
     ~Logger() = default;
 
-    inline void log(const mString& type, unsigned int id, T value){data[type][id] = new T(value);}
+    inline void log(const mString& type, unsigned int id, T value)
+    {
+        data[type][id] = new T(value);
+    }
     inline void detach(const mString& type, unsigned int id)
     {
         if(data[type][id]) 

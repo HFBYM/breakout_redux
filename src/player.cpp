@@ -1,25 +1,25 @@
 #include"player.h"
 #include<iostream>
-#include<glad.h>
-#include<glfw3.h>
+#include"keyval.h"
 
 // generate the player range object
-static CollisionObj** player_range_p = nullptr;
+static MoveObj** player_range_p = nullptr;
 
 Player::Player(unsigned int width, unsigned int height, glm::vec3 color, glm::vec2 size) 
 	:RenderObj("paddle", "sprite", color), init_screen_width(width), init_screen_height(height),Object(glm::vec2((width - size.x) / 2, height - size.y), size, "Player")
 {
 	if (!player_range_p)
-	{
-		player_range_p = new CollisionObj * [4];
-		player_range_p[0] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
-			glm::vec2(0.0f, init_screen_height / 2));
-		player_range_p[1] = new CollisionObj("Player_Range", glm::vec2(init_screen_width, init_screen_height / 2),
-			glm::vec2(0.0f, init_screen_height / 2));
-		player_range_p[2] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2),
-			glm::vec2(init_screen_width, 0.0f));
-		player_range_p[3] = new CollisionObj("Player_Range", glm::vec2(0.0f, init_screen_height),
-			glm::vec2(init_screen_width, 0.0f));
+	{	
+		// range couldn't be a line and thick enough to avoid object passing through at one frame, size couldn't be negtive 
+		player_range_p = new MoveObj * [4];
+		player_range_p[0] = new MoveObj("Player_Range", glm::vec2(-10.0f, init_screen_height / 2),
+			glm::vec2(10.0f, init_screen_height / 2));
+		player_range_p[1] = new MoveObj("Player_Range", glm::vec2(init_screen_width, init_screen_height / 2),
+			glm::vec2(10.0f, init_screen_height / 2));
+		player_range_p[2] = new MoveObj("Player_Range", glm::vec2(0.0f, init_screen_height / 2 - 10.0f),
+			glm::vec2(init_screen_width, 10.0f));
+		player_range_p[3] = new MoveObj("Player_Range", glm::vec2(0.0f, init_screen_height),
+			glm::vec2(init_screen_width, 10.0f));
 		for(int i = 0; i < 4; i++)
 			player_range_p[i]->log_collision();
 	}
@@ -83,14 +83,7 @@ void Player::processInput(int key, int action)
 		velocity = glm::vec2(0.0f);
 }
 
-void Player::do_collision(const mString &message)
+void Player::do_collision(const mString& message, const glm::vec2& reflect, const glm::vec2& offset)
 {
-	if(message == "up")
-		pos.y = init_screen_height / 2.0f;
-	else if(message == "down")
-		pos.y = init_screen_height - size.y;
-	else if(message == "left")
-		pos.x = 0;
-	else if(message == "right")
-		pos.x = init_screen_width - size.x;
+	pos+= offset;
 }

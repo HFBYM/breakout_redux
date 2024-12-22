@@ -17,7 +17,7 @@ static int init_screen_height = 600;
 static int screen_width;
 static int screen_height;
 static bool isInit = false;
-static Level level(0);
+static Level* level = nullptr;
 static Player* player = nullptr;
 static Ball* ball = nullptr;
 
@@ -85,9 +85,10 @@ void Game::init()
 	ResourceManager::init();
 	Renderer::init();
 
-	level.init(PROJECT_DIR"/assets/levels/level_1.lvl", init_screen_width, 
+	level = new Level(0);
+	level->init(PROJECT_DIR"/assets/levels/level_1.lvl", init_screen_width, 
 		init_screen_height/2);
-	level.log_renderer();
+	level->log_all();
 
 	player = new Player(init_screen_width, init_screen_height);
 	player->log_all();
@@ -118,16 +119,15 @@ void Game::run()
 		// trigger the events such as mouse and keyboard
 		glfwPollEvents();
 
-		////处理输入
-		//breakout.princessInput(deltaTime);	//处理用户输入
-		//breakout.update(deltaTime);		//更新游戏状态
+		//TODO update all
+		ball->setPos(player->getPos(), player->getSize());
+		level->Rotate();
 
 		Renderer::render(init_screen_width, init_screen_height);
 
 		Movement::move(deltaTime);
-		Collision::collision();
+		Collision::collision(deltaTime);
 
-		level.Rotate();
 		// swap the two buffers
 		glfwSwapBuffers(window);
 	}
@@ -135,11 +135,12 @@ void Game::run()
 
 Game::~Game()
 {
-	level.clear();
+	level->clear();
 	player->detach_all();
 	ball->detach_all();
 	delete player;
 	delete ball;
+	delete level;
 
 	Collision::clear();
 	ResourceManager::clear();

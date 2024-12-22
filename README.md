@@ -11,7 +11,7 @@ And it also uses new archetecture to fullfill the game with nice comments in the
 __Caveat__
 I am not a professional game developer, nor a professional C++ programmer. This is just a program for practice. So the design may be unconventional or sub-optimal in many ways. Happy to take feedback from any pros out there!
 
-## TODO
+## TODO 功能实现
 
 动态篮球 变化固体块 更准确的碰撞算法 分utils 用户UI 动画 历史记录保存 隐身
 

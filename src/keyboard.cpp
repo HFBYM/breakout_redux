@@ -21,6 +21,8 @@ void KeyBoard:: key_callback(GLFWwindow* window, int key, int scancode, int acti
 	{
 		for (auto& [id, data] : (*log_datas)["Player"])
 				data->func_p(key, action);
+		for (auto& [id, data] : (*log_datas)["Ball"])
+				data->func_p(key, action);
 	}
 }
 

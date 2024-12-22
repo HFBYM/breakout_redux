@@ -1,6 +1,6 @@
 #pragma once
 #include "mString.h"
-// TODO????uniform
+// TODO 静态uniform
 class Shader
 {
 public:
