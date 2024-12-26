@@ -2,6 +2,7 @@
 #ifndef NULL
 	#define NULL 0
 #endif 
+//TODO 智能指针并重新规划各类生命周期
 class mString
 {
 public:

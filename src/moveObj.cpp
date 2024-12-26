@@ -11,7 +11,7 @@ MoveObj::~MoveObj()
 void MoveObj::log_move()
 {
 	if (!is_log_move)
-		Movement::logger.log(id_name, id_num, {pos, velocity, accelerate});
+		Movement::logger.log(id_name, id_num, new Movement::LogData(pos, velocity, accelerate));
 	is_log_move = true;
 }
 
@@ -27,7 +27,7 @@ void MoveObj::log_collision()
 	{
 		std::function<void(const mString&, const glm::vec2&, const glm::vec2 &)> func = [this](const mString& message,const glm::vec2& reflect, const glm::vec2 &offset)
 		{ this->do_collision(message, reflect, offset); };
-		Collision::logger.log(id_name, id_num, Collision::CollisionData{pos, size, func, velocity});
+		Collision::logger.log(id_name, id_num, new Collision::CollisionData(pos, size, func, velocity));
 	}
 	is_log_collision = true;
 }

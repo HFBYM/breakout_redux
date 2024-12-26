@@ -1,19 +1,18 @@
-#include"keyboardObj.h"
-#include"keyboard.h"
-#include"check.h"
+#include "keyboardObj.h"
+#include "keyboard.h"
+#include "check.h"
 KeyboardObj::~KeyboardObj()
 {
-	ASSERT_LOG(!is_log_keyboard, "ERROR::KEYBOARDOBJ: " << id_name.getStr() << " "
-		<< id_num << "isn't detached in keyboard");
+	ASSERT_LOG(!is_log_keyboard, "ERROR::KEYBOARDOBJ: " << id_name.getStr() << " "<< id_num << "isn't detached in keyboard");
 }
 
 void KeyboardObj::log_keyboard()
 {
-	if(!is_log_keyboard)
-	{		
+	if (!is_log_keyboard)
+	{
 		std::function<void(int, int)> func = [this](int key, int action)
 		{ this->processInput(key, action); };
-		KeyBoard::logger.log(id_name,id_num,{func});
+		KeyBoard::logger.log(id_name, id_num, new KeyBoard::LogData(func));
 	}
 	is_log_keyboard = true;
 }

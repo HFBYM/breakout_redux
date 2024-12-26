@@ -11,7 +11,7 @@ RenderObj::~RenderObj()
 void RenderObj::log_renderer()
 {
 	if (!is_log_renderer)
-		Renderer::logger.log(id_name, id_num, Renderer::LogData{shader, tex, pos, size, rotate, color});
+		Renderer::logger.log(id_name, id_num, new Renderer::LogData(shader, tex, pos, size, rotate, color));
 	is_log_renderer = true;
 }
 
