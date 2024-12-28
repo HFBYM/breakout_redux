@@ -1,29 +1,35 @@
-# pragma once
-#include<functional>
-#include"logger.h"
+#pragma once
+#include <functional>
+#include "logger.h"
 struct GLFWwindow;
-class KeyboardObj;
+
+struct KeyBoardData
+{
+	using FuncType = std::function<void(int, int)>;
+
+	FuncType func_p;
+	KeyBoardData(FuncType func_p) : func_p(func_p) {}
+};
+
 /// @brief store and process the keyboard input
-class KeyBoard
+class KeyBoard:public Logger<KeyBoardData>
 {
 public:
 	/// @brief this function type is used for callback
-	using FuncType = std::function<void(int,int)>;
+	using FuncType = KeyBoardData::FuncType;
 
-	struct LogData
-	{
-		FuncType func_p;
-		LogData(FuncType func_p) : func_p(func_p) {}
-	};
-	
-	static Logger<LogData> logger;
+	using Data = KeyBoardData;
 
+	/// @brief store the callback function
 	/// @brief mention	that it won't work when more than 3 keys pressed, it might be due to GLFW
-	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+	void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 
-	/// @brief it can't clear one more time
-	static void clear();
+	static KeyBoard& instance()
+	{
+		static KeyBoard inst;
+		return inst;
+	}
 private:
-	KeyBoard() = delete;
-	~KeyBoard() = delete;
+	KeyBoard() = default;
+	~KeyBoard() = default;
 };

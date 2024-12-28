@@ -6,7 +6,7 @@
 static bool isClear = false;
 
 static std::map<mString, std::map<unsigned int, ParticleGenerator::ParticleData *>> particle_data;
-Logger<ParticleGenerator::ParticleData> ParticleGenerator::logger(particle_data);
+Logger<ParticleGenerator::ParticleData> ParticleGenerator::logger(&particle_data);
 
 static unsigned int particles_num = 20;
 static float particle_size = 10.0f;

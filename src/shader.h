@@ -4,32 +4,31 @@
 class Shader
 {
 public:
-    Shader(const mString& name):m_name(name){}
-    Shader& operator=(Shader&& other) = delete;
+    /// @brief a shader will be compiled after created
+    Shader(const mString &name, const mString &vertexSource, const mString &fragmentSouce);
+
+    /// @brief it can't be copy constructed
+    Shader(const Shader &) = delete;
+
+    /// @brief copy is not allowed
+    Shader &operator=(Shader &other) = delete;
 
     /// @brief each shader should be clear manually
     ~Shader();
 
     /// @brief return *this and bind the shader
-    Shader& use();
+    Shader &use();
 
-    /// @brief a shader must be compiled and only once
-    void compile(const mString& vertexSource, const mString& fragmentSouce);
+    /// @brief if Uniform can't be found, program will break down.
+    // after setting the uniform, the shader would be of use
+    template <typename T>
+    void setUniform(const mString &name, const T &value);
 
-    /// @brief delete the shader program which must be a compiled one and it can't clear one more time
-    void clear();
-
-    /// @brief if Uniform can't be found, program will break down.  
-    //after setting the uniform, the shader would be of use
-    template<typename T>
-    void setUniform(const mString& name, const T& value);
-private:    
+private:
     // the id of the shader
     unsigned int id = 0;
 
-    bool is_compiled = false;
-    bool isClear = false;
     mString m_name;
 
-    void checkCompileErrors(unsigned int object, const mString& type);
+    void checkCompileErrors(unsigned int object, const mString &type);
 };

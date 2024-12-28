@@ -1,9 +1,6 @@
 #include "level.h"
 #include "Resource_manager.h"
 #include "check.h"
-#define CHECK_STATUS()                                                                                          \
-	ASSERT_LOG(isInit, "ERROR::LEVEL: function " << __FUNCTION__ << " uses level " << id << "not initialized"); \
-	ASSERT_LOG(!isClear, "ERROR::LEVEL: function " << __FUNCTION__ << " uses level " << id << "cleared")
 
 static void load(const mString &path, std::vector<std::vector<unsigned int>> &tileData)
 {
@@ -27,16 +24,9 @@ static void load(const mString &path, std::vector<std::vector<unsigned int>> &ti
 	}
 	ASSERT_LOG(tileData.size() > 1, "ERROR::LEVEL: file " << path.getStr() << " has wrong data");
 }
-Level::~Level()
-{
-	ASSERT_LOG(isClear, "ERROR::LEVEL:  level " << id << " not cleared");
-}
-void Level::init(const mString &path, unsigned int levelWidth, unsigned int levelHeight)
-{
-	ASSERT_LOG(!isInit, "ERROR::LEVEL: level " << id << " is initialized one more time");
-	ASSERT_LOG(!isClear, "ERROR::LEVEL: function " << __FUNCTION__ << " uses level " << id << "cleared");
-	isInit = true;
 
+Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsigned int levelHeight)
+{
 	std::vector<std::vector<unsigned int>> tileData;
 	load(path, tileData);
 
@@ -61,8 +51,7 @@ void Level::init(const mString &path, unsigned int levelWidth, unsigned int leve
 			glm::vec2 size(unit_width, unit_height);
 			if (tileData[y][x] == Brick::SOLID)
 			{
-				this->bricks.push_back(new Brick{pos, size, "block_solid", Brick::SOLID, true,
-										glm::vec3(0.8f, 0.8f, 0.7f)});
+				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block_solid", Brick::SOLID, true, glm::vec3(0.8f, 0.8f, 0.7f)));
 			}
 			else if (tileData[y][x] == Brick::NONE)
 				continue;
@@ -86,8 +75,7 @@ void Level::init(const mString &path, unsigned int levelWidth, unsigned int leve
 				default:
 					ERROR_LOG("ERROR::LEVEL: unnamed type of brick in " << path.getStr());
 				}
-				this->bricks.push_back(new Brick{pos, size, "block", static_cast<Brick::BrickType>(tileData[y][x]),
-										false, color});
+				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block", static_cast<Brick::BrickType>(tileData[y][x]), false, color));
 			}
 		}
 	}
@@ -95,57 +83,38 @@ void Level::init(const mString &path, unsigned int levelWidth, unsigned int leve
 
 void Level::log_renderer()
 {
-	CHECK_STATUS();
 	for (auto &i : bricks)
 		i->log_renderer();
 }
 
 void Level::detach_renderer()
 {
-	CHECK_STATUS();
 	for (auto &i : bricks)
 		i->detach_renderer();
 }
 
 void Level::log_collision()
 {
-	CHECK_STATUS();
 	for (auto &i : bricks)
 		i->log_collision();
 }
 
 void Level::detach_collision()
 {
-	CHECK_STATUS();
 	for (auto &i : bricks)
 		i->detach_collision();
 }
 
 void Level::log_all()
 {
-	CHECK_STATUS();
 	log_renderer();
 	log_collision();
 }
 
 void Level::detach_all()
 {
-	CHECK_STATUS();
 	detach_renderer();
 	detach_collision();
-}
-
-void Level::clear()
-{
-	CHECK_STATUS();
-	isClear = true;
-	for (auto &i : bricks)
-	{
-		i->detach_all();
-		if(i)
-			delete i;
-	}
-	bricks.clear();
 }
 
 void Level::Rotate()

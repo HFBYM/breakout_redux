@@ -1,27 +1,27 @@
 #pragma once
 #include "glm.hpp"
 #include "logger.h"
-class Movement
+struct MovementData
 {
-public:
-    struct LogData
-    {
-    public:
-        glm::vec2 &pos;
-        glm::vec2 &volecity;
-        glm::vec2 &accelerate;
-        LogData(glm::vec2 &pos, glm::vec2 &volecity, glm::vec2 &accelerate) : pos(pos), volecity(volecity), accelerate(accelerate){}
-    };
+    glm::vec2 &pos;
+    glm::vec2 &volecity;
+    glm::vec2 &accelerate;
+    MovementData(glm::vec2 &pos, glm::vec2 &volecity, glm::vec2 &accelerate) : pos(pos), volecity(volecity), accelerate(accelerate) {}
+};
 
+class Movement:public Logger<MovementData>
+{
 private:
-    ~Movement() = delete;
-    Movement() = delete;
+    ~Movement() = default;
+    Movement() = default;
 
 public:
-    static Logger<LogData> logger;
+    using Data = MovementData;
+    void move(float dt);
 
-    static void move(float dt);
-
-    /// @brief it can't be cleared twice
-    static void clear();
+    static Movement& instance()
+    {
+        static Movement instance;
+        return instance;
+    }
 };

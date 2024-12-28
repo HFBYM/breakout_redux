@@ -22,6 +22,9 @@ public:
 private:
 	unsigned int init_screen_width = 0;
 	unsigned int init_screen_height = 0;
+	
+	// generate the player range object
+	static std::unique_ptr<std::unique_ptr<MoveObj>[]> player_range_p;
 
 	inline static glm::vec2 getInitSize() { static glm::vec2 init_size(100.0, 20.0); return init_size; }
 };

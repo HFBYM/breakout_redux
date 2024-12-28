@@ -1,42 +1,29 @@
 #pragma once
 #include <map>
 #include "mString.h"
+#include <memory>
 /// @brief manages the data from objects
 template <typename T>
-//TODO 改为指针？或者其他 直接被访问不安全 如何转发或归类 模板
+// TODO 改为指针？或者其他 直接被访问不安全 如何转发或归类 模板
 class Logger
 {
-private:
-    std::map<mString, std::map<unsigned int, T *>> &data;
+protected:
+    Logger() = default;
+    ~Logger()
+    {
+        data.clear();
+    }
+    std::map<mString, std::map<unsigned int, std::unique_ptr<T>>> data;
 
 public:
-    /// @brief let the logger take control of the data
-    Logger(std::map<mString, std::map<unsigned int, T *>> &data) : data(data) {}
-    ~Logger() = default;
-
-    inline void log(const mString& type, unsigned int id, T* value)
+    inline void log(const mString &type, unsigned int id, std::unique_ptr<T> value)
     {
-        data[type][id] = value;
+        data[type][id] = std::move(value);
     }
-    inline void detach(const mString& type, unsigned int id)
+    inline void detach(const mString &type, unsigned int id)
     {
-        if(data[type][id]) 
-            delete data[type][id];
-        data[type][id] = nullptr;
+        if (data.empty())
+            return;
         data[type].erase(id);
-    }
-    inline void clear()
-    {
-        for(auto& i : data) 
-        { 
-            for(auto& j : i.second) 
-                if(j.second)
-                {
-                    delete j.second;
-                    j.second = nullptr;
-                }
-            i.second.clear();
-        }
-        data.clear();
     }
 };

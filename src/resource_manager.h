@@ -12,9 +12,6 @@ private:
 public:
 	/// @brief it should be initialized once only
 	static void init();
-
-	/// @brief clear all the shaders and textures when program terminated and should clear once only
-	static void clear();
 	
 	static mString readFile(const mString& file);
 

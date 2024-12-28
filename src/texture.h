@@ -19,22 +19,19 @@ private:
 	unsigned int filter_min = 0, filter_max = 0;
 
 	mString name;
-	bool isGenerate = false;
-	bool isClear = false;
+	
+	/// @brief it doesn't decide which slot to bind
+	void generate(unsigned int width, unsigned int height, unsigned char* data);
 public:
-	Texture2D(const mString& name, unsigned int inFormat, unsigned int imaFormat);
+	Texture2D(const mString& name, unsigned int inFormat, unsigned int imaFormat, unsigned int width, unsigned int height, unsigned char* data);
 
-	Texture2D& operator=(Texture2D&&) = delete;
+	Texture2D(const Texture2D&) = delete;
+
+	Texture2D& operator=(Texture2D&) = delete;
 
 	~Texture2D();
 
-	/// @brief it doesn't decide which slot to bind
-	void generate(unsigned int width, unsigned int height, unsigned char* data);
-
 	void bind() const;
-
-	/// @brief delete the texture and it can't be regenerated 
-	void clear();
 
 	inline unsigned int getImage_Format() { return image_format; }
 };

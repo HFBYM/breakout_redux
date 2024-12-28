@@ -1,45 +1,30 @@
 #include "ball.h"
 #include "keyval.h"
 
-/// @brief generate the ball range
-static MoveObj **ball_range = nullptr;
-//TODO randon speed
+std::unique_ptr<std::unique_ptr<MoveObj>[]> Ball::ball_range(std::make_unique<std::unique_ptr<MoveObj>[]>(4));
+// TODO randon speed
 static const glm::vec2 init_ball_velocity(200.0f, -450.0f);
 
 Ball::Ball(unsigned int screen_width, unsigned int screen_height, glm::vec3 color, float radius)
     : screen_height(screen_height), screen_width(screen_width), radius(radius), RenderObj("basketball", "sprite", color),
       Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball")
 {
-    if (!ball_range)
+    static bool is_init_range = false;
+    if (!is_init_range)
     {
-        ball_range = new MoveObj *[4];
-        ball_range[0] = new MoveObj("Ball_Range", glm::vec2(-10.0f, 0.0f), glm::vec2(10.0f, screen_height));
-        ball_range[1] = new MoveObj("Ball_Range", glm::vec2(screen_width, 0.0f), glm::vec2(10.0f, screen_height));
-        ball_range[2] = new MoveObj("Ball_Range", glm::vec2(0.0f, -10.0f), glm::vec2(screen_width, 10.0f));
-        ball_range[3] = new MoveObj("Ball_Range", glm::vec2(0.0f, screen_height), glm::vec2(screen_width, 10.0f));
+        ball_range[0] = std::make_unique<MoveObj>("Ball_Range", glm::vec2(-10.0f, 0.0f), glm::vec2(10.0f, screen_height));
+        ball_range[1] = std::make_unique<MoveObj>("Ball_Range", glm::vec2(screen_width, 0.0f), glm::vec2(10.0f, screen_height));
+        ball_range[2] = std::make_unique<MoveObj>("Ball_Range", glm::vec2(0.0f, -10.0f), glm::vec2(screen_width, 10.0f));
+        ball_range[3] = std::make_unique<MoveObj>("Ball_Range", glm::vec2(0.0f, screen_height), glm::vec2(screen_width, 10.0f));
         for (int i = 0; i < 4; i++)
-        {
             ball_range[i]->log_collision();
-        }
     }
+    is_init_range = true;
 }
 
 Ball::~Ball()
 {
-    if (ball_range)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (ball_range[i])
-            {
-                ball_range[i]->detach_collision();
-                delete ball_range[i];
-            }
-            ball_range[i] = nullptr;
-        }
-        delete[] ball_range;
-        ball_range = nullptr;
-    }
+    detach_all();
 }
 
 void Ball::log_all()
@@ -58,11 +43,11 @@ void Ball::detach_all()
     detach_keyboard();
 }
 
-void Ball::do_collision(const mString& message,const glm::vec2 &reflect, const glm::vec2 &offset)
+void Ball::do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
-    velocity = glm::reflect(velocity, glm::normalize(reflect) );
+    velocity = glm::reflect(velocity, glm::normalize(reflect));
     pos += offset;
-    if( message == "Player")
+    if (message == "Player")
         velocity.y = -abs(velocity.y);
 }
 void Ball::processInput(int key, int action)
