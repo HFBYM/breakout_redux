@@ -53,109 +53,56 @@ Renderer::~Renderer()
     glDeleteVertexArrays(1, &va);
 }
 
+static void draw(unsigned int va, const Renderer::Data &data, unsigned int width, unsigned int height)
+{
+    ResourceManager &resource_manager = ResourceManager::instance();
+    resource_manager.getShader(data.shader_name).use();
+
+    // first move, then rotate, scale at last
+    glm::mat4 model;
+    model = glm::translate(model, glm::vec3(data.pos, 0.0f));
+
+    // make it rotate to the middle
+    model = glm::translate(model, glm::vec3(0.5 * data.size.x, 0.5 * data.size.y, 0.0f));
+    model = glm::rotate(model, data.rotate, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    // move it back
+    model = glm::translate(model, glm::vec3(-0.5f * data.size.x, -0.5f * data.size.y, 0.0f));
+
+    model = glm::scale(model, glm::vec3(data.size, 1.0f));
+
+    resource_manager.getShader(data.shader_name).setUniform("model", model);
+    resource_manager.getShader(data.shader_name).setUniform("spriteColor", data.color);
+
+    glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
+                                static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
+    resource_manager.getShader(data.shader_name).use().setUniform("image", 0);
+    resource_manager.getShader(data.shader_name).use().setUniform("proj", proj);
+
+    // bind the texture to slot 0
+    glActiveTexture(GL_TEXTURE0);
+    resource_manager.getTexture(data.texture_name).bind();
+    glBindVertexArray(va);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+    glBindVertexArray(0);
+}
+
 void Renderer::render(unsigned int width, unsigned int height)
 {
     // set the color to clear the color buffer and avoid overflowing
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (const auto &i : data["Brick"])
+    for (const auto &[_, brick] : data["Brick"])
     {
-        const RendererData &temp = *i.second;
-        ResourceManager::getShader(temp.shader_name).use(); // TODO优化按照着色器分类
-
-        // first move, then rotate, scale at last
-        glm::mat4 model;
-        model = glm::translate(model, glm::vec3(temp.pos, 0.0f));
-
-        // make it rotate to the middle
-        model = glm::translate(model, glm::vec3(0.5 * temp.size.x, 0.5 * temp.size.y, 0.0f));
-        model = glm::rotate(model, temp.rotate, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        // move it back
-        model = glm::translate(model, glm::vec3(-0.5f * temp.size.x, -0.5f * temp.size.y, 0.0f));
-
-        model = glm::scale(model, glm::vec3(temp.size, 1.0f));
-
-        ResourceManager::getShader(temp.shader_name).setUniform("model", model);
-        ResourceManager::getShader(temp.shader_name).setUniform("spriteColor", temp.color);
-
-        glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
-                                    static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
-        ResourceManager::getShader("sprite").use().setUniform("image", 0);
-        ResourceManager::getShader("sprite").use().setUniform("proj", proj);
-
-        // bind the texture to slot 0
-        glActiveTexture(GL_TEXTURE0);
-        ResourceManager::getTexture(temp.texture_name).bind();
-        glBindVertexArray(va);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-        glBindVertexArray(0);
+        draw(va, *brick, width, height);
     }
-    for (const auto &i : data["Player"])
+    for (const auto &[_, player] : data["Player"])
     {
-        const RendererData &temp = *i.second;
-        ResourceManager::getShader(temp.shader_name).use();
-
-        // first move, then rotate, scale at last
-        glm::mat4 model;
-        model = glm::translate(model, glm::vec3(temp.pos, 0.0f));
-
-        // make it rotate to the middle
-        model = glm::translate(model, glm::vec3(0.5 * temp.size.x, 0.5 * temp.size.y, 0.0f));
-        model = glm::rotate(model, temp.rotate, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        // move it back
-        model = glm::translate(model, glm::vec3(-0.5f * temp.size.x, -0.5f * temp.size.y, 0.0f));
-
-        model = glm::scale(model, glm::vec3(temp.size, 1.0f));
-
-        ResourceManager::getShader(temp.shader_name).setUniform("model", model);
-        ResourceManager::getShader(temp.shader_name).setUniform("spriteColor", temp.color);
-
-        glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
-                                    static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
-        ResourceManager::getShader("sprite").use().setUniform("image", 0);
-        ResourceManager::getShader("sprite").use().setUniform("proj", proj);
-
-        // bind the texture to slot 0
-        glActiveTexture(GL_TEXTURE0);
-        ResourceManager::getTexture(temp.texture_name).bind();
-        glBindVertexArray(va);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-        glBindVertexArray(0);
+        draw(va, *player, width, height);
     }
-    for (const auto &i : data["Ball"])
+    for (const auto &[_, ball] : data["Ball"])
     {
-        const RendererData &temp = *i.second;
-        ResourceManager::getShader(temp.shader_name).use();
-
-        // first move, then rotate, scale at last
-        glm::mat4 model;
-        model = glm::translate(model, glm::vec3(temp.pos, 0.0f));
-
-        // make it rotate to the middle
-        model = glm::translate(model, glm::vec3(0.5 * temp.size.x, 0.5 * temp.size.y, 0.0f));
-        model = glm::rotate(model, temp.rotate, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        // move it back
-        model = glm::translate(model, glm::vec3(-0.5f * temp.size.x, -0.5f * temp.size.y, 0.0f));
-
-        model = glm::scale(model, glm::vec3(temp.size, 1.0f));
-
-        ResourceManager::getShader(temp.shader_name).setUniform("model", model);
-        ResourceManager::getShader(temp.shader_name).setUniform("spriteColor", temp.color);
-
-        glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
-                                    static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
-        ResourceManager::getShader("sprite").use().setUniform("image", 0);
-        ResourceManager::getShader("sprite").use().setUniform("proj", proj);
-
-        // bind the texture to slot 0
-        glActiveTexture(GL_TEXTURE0);
-        ResourceManager::getTexture(temp.texture_name).bind();
-        glBindVertexArray(va);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-        glBindVertexArray(0);
+        draw(va, *ball, width, height);
     }
 }

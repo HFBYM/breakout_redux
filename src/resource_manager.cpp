@@ -4,23 +4,24 @@
 #include <stb.image.h>
 #include <map>
 #include <glad.h>
-#include "shader.h"
-#include "texture.h"
 #include "mString.h"
-#include "check.h"
 #include <memory>
+#include <iostream>
 
-#define CHECK_STATUS() ASSERT_LOG(isInit, "ERROR::RESOURCE: " << __FUNCTION__ << " operate resource manager not initialized");
-
-// initialize the static virants
-static std::map<mString, std::unique_ptr<Texture2D>> textures;
-static std::map<mString, std::unique_ptr<Shader>> shaders;
-static bool isInit = false;
-
-static void loadShader(const mString &file, const mString &name)
+void ResourceManager::loadShader(const mString &file, const mString &name)
 {
 	std::ifstream ifs(file.getStr());
-	ASSERT_LOG(ifs.is_open(), "ERROR::SHADER: failed to open " << name.getStr());
+	try
+	{
+		if (!ifs.is_open())
+			throw std::runtime_error("ERROR::SHADER: file not found");
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "failed to open " << name.getStr() << std::endl;
+		return;
+	}
 	std::string line;
 	std::stringstream ss[2];
 
@@ -55,15 +56,23 @@ static void loadShader(const mString &file, const mString &name)
 		// remember the endl which shader needs but ignored by getline
 		ss[type] << line << std::endl;
 	}
-	ASSERT_LOG(v_found && f_found, "ERROR::SHADER: syntex error: " << (v_found ? NULL : "no vertex shader ") << (f_found ? NULL : "no fragment shader ") << "named: " << name.getStr() << " in\t" << file.getStr());
+	try
+	{
+		if (!v_found)
+			throw std::runtime_error("ERROR::SHADER: no vertex shader found");
+		if (!f_found)
+			throw std::runtime_error("ERROR::SHADER: no fragment shader found");
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "name: " << name.getStr() << " in\t" << file.getStr() << std::endl;
+		return;
+	}
 	shaders[name] = std::make_unique<Shader>(name, ss[VERTEX].str().c_str(), ss[FRAGMENT].str().c_str());
 }
 
-/// @brief load texture2D from file
-/// @param file filepath
-/// @param has_alpha decides whether or not this texture has alpha channel
-/// @param name the texture name
-static void loadTexture(const mString &file, bool has_alpha, const mString &name)
+void ResourceManager::loadTexture(const mString &file, bool has_alpha, const mString &name)
 {
 
 	// usually we need to turn up and down the texture cause OpenGL renders from the leftdown while
@@ -82,25 +91,8 @@ static void loadTexture(const mString &file, bool has_alpha, const mString &name
 	stbi_image_free(image);
 }
 
-Shader &ResourceManager::getShader(const mString &name)
+ResourceManager::ResourceManager()
 {
-	CHECK_STATUS();
-	ASSERT_LOG(shaders.find(name) != shaders.end(),
-			   "ERROR::GET_SHADER: failed to find the shader " << name.getStr());
-	return *shaders[name];
-}
-Texture2D &ResourceManager::getTexture(const mString &name)
-{
-	CHECK_STATUS();
-	ASSERT_LOG(textures.find(name) != textures.end(),
-			   "ERROR::GET_TEXTURE: failed to find the texture " << name.getStr());
-	return *textures[name];
-}
-void ResourceManager::init()
-{
-	ASSERT_LOG(!isInit, "ERROR::RESOURCE: resource manager should be initialized only once");
-	isInit = true;
-	CHECK_STATUS();
 	// TODOjson文件管理
 	// load in shaders
 	loadShader(PROJECT_DIR "/assets/shaders/postProcess.shader", "postProcess");
@@ -126,11 +118,50 @@ void ResourceManager::init()
 	loadTexture(PROJECT_DIR "/assets/textures/powerup_speed.png", false, "tex_speed");
 	loadTexture(PROJECT_DIR "/assets/textures/powerup_sticky.png", false, "tex_sticky");
 }
+
+const Shader &ResourceManager::getShader(const mString &name)
+{
+	try
+	{
+		if (shaders.find(name) == shaders.end())
+			throw std::runtime_error("ERROR::GET_SHADER: shader not found");
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "name: " << name.getStr() << std::endl;
+		__debugbreak();
+	}
+	return *shaders[name];
+}
+const Texture2D &ResourceManager::getTexture(const mString &name)
+{
+	try
+	{
+		if (textures.find(name) == textures.end())
+			throw std::runtime_error("ERROR::GET_TEXTURE: texture not found");
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "name: " << name.getStr() << std::endl;
+		__debugbreak();
+	}
+	return *textures[name];
+}
 mString ResourceManager::readFile(const mString &file)
 {
-	CHECK_STATUS();
 	std::ifstream ifs(file.getStr());
-	ASSERT_LOG(ifs.is_open(), "ERROR::FILE: failed to open " << file.getStr());
+	try{
+		if (!ifs.is_open())
+			throw std::runtime_error("ERROR::FILE: failed to open");
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "path: " << file.getStr() << std::endl;
+		return NULL;
+	}
 
 	std::string line;
 	std::stringstream ss;

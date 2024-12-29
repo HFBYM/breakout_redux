@@ -1,5 +1,5 @@
 #include"brick.h"
-#include"check.h"
+#include<iostream>
 
 void Brick::log_all()
 {

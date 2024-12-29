@@ -4,13 +4,13 @@
 #include <memory>
 /// @brief manages the data from objects
 template <typename T>
-// TODO 改为指针？或者其他 直接被访问不安全 如何转发或归类 模板
 class Logger
 {
 protected:
     Logger() = default;
     ~Logger()
     {
+        // if doesn't clear, some will access invalid data and get errors
         data.clear();
     }
     std::map<mString, std::map<unsigned int, std::unique_ptr<T>>> data;

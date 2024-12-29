@@ -23,9 +23,6 @@ protected:
 	glm::vec2 pos = glm::vec2(0.0f);
 
 	glm::vec2 size = glm::vec2(0.0f);
-	//TODO delete
-	/// @brief if it's false, this object will just be stored and seem like there isn't one
-	bool to_work = true;
 	mString id_name;
 	unsigned int id_num = 0;
 private:

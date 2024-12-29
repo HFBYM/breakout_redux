@@ -28,19 +28,6 @@ public:
 
 	void render(unsigned int width, unsigned int height);
 
-    inline void log(const mString &type, unsigned int id, std::unique_ptr<Data> value)
-    {
-        data[type][id] = std::move(value);
-        data[type][id];
-    }
-
-    inline void detach(const mString &type, unsigned int id)
-    {
-        if(data.empty())
-            return;
-        data[type].erase(id);
-    }
-
     static Renderer& instance()
     {
         static Renderer instance;

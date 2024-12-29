@@ -39,7 +39,7 @@ void Player::detach_all()
 	detach_collision();
 	detach_renderer();
 }
-//TODO 更好的输入响应
+//TODO 更好的输入速度响应
 static const float v = 550.0f;
 static glm::vec2 input_v = glm::vec2(0.0f);
 void Player::processInput(int key, int action)

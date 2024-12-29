@@ -33,5 +33,5 @@ public:
 
 	void bind() const;
 
-	inline unsigned int getImage_Format() { return image_format; }
+	inline unsigned int getImage_Format() const { return image_format; }
 };

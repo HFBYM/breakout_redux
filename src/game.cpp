@@ -9,7 +9,6 @@
 #include "movement.h"
 #include "collision.h"
 #include "ball.h"
-#include "check.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -28,15 +27,16 @@ static GLFWwindow *gl_init()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // core module
 
 	// create the window hint and check
-	GLFWwindow *window = glfwCreateWindow(init_screen_width, init_screen_height,
-										  "Breakout", nullptr, nullptr);
-	ASSERT_LOG(window, "ERROR::WINDOW: fail to create the window");
+	GLFWwindow *window = glfwCreateWindow(init_screen_width, init_screen_height, "Breakout", nullptr, nullptr);
 
+	if (!window)
+		throw std::runtime_error("ERROR::WINDOW: fail to create the window");
 	// make this window the current context
 	glfwMakeContextCurrent(window);
 
 	// it's different from glew
-	ASSERT_LOG(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "ERROR::GLAD: faid to initialize glad");
+	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		throw std::runtime_error("ERROR::GLAD: faid to initialize glad");
 
 	return window;
 }
@@ -51,12 +51,21 @@ static void size_callback(GLFWwindow *window, int width, int height)
 
 Game::Game()
 {
-	window = gl_init();
+	try{
+		window = gl_init();
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
 
 	// set the viewport leftdown is origin
 	glViewport(0, 0, init_screen_width, init_screen_height);
 
-	auto func = [](GLFWwindow *window, int key, int scancode, int action, int mods){KeyBoard::instance().key_callback(window, key, scancode, action, mods);};
+	auto func = [](GLFWwindow *window, int key, int scancode, int action, int mods)
+	{ KeyBoard::instance().key_callback(window, key, scancode, action, mods); };
 
 	// function will work whenever keys pressed
 	// glfwSetKeyCallback(window, KeyBoard::key_callback);
@@ -71,8 +80,6 @@ Game::Game()
 	// enable blend and caution not to test the depth
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	ResourceManager::init();
 
 	level = std::make_unique<Level>(0, PROJECT_DIR "/assets/levels/level_1.lvl", init_screen_width, init_screen_height / 2);
 	level->log_all();

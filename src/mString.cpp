@@ -1,6 +1,5 @@
 #include "mString.h"
-#include "check.h"
-
+#include <iostream>
 mString::mString(const char *str)
 {
 	if (str)
@@ -93,10 +92,16 @@ bool mString::operator>(const mString &other) const
 
 char &mString::operator[](unsigned int index)
 {
-	if (!ptr)
-		ERROR_LOG("ERROR::MSTRING: access empty mstring");
-	if (index >= size)
-		ERROR_LOG("ERROR::MSTRING: index out of range in " << ptr.get());
+	try
+	{
+		if (index >= size)
+			throw "ERROR::MSTRING: index out of range in mString ";
+	}
+	catch (const char *e)
+	{
+		std::cerr << e << ptr.get() << std::endl;
+		__debugbreak();
+	}
 	return ptr[index];
 }
 

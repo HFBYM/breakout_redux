@@ -17,12 +17,12 @@ public:
     ~Shader();
 
     /// @brief return *this and bind the shader
-    Shader &use();
+    const Shader &use() const;
 
     /// @brief if Uniform can't be found, program will break down.
     // after setting the uniform, the shader would be of use
     template <typename T>
-    void setUniform(const mString &name, const T &value);
+    void setUniform(const mString &name, const T &value) const;
 
 private:
     // the id of the shader
@@ -30,5 +30,5 @@ private:
 
     mString m_name;
 
-    void checkCompileErrors(unsigned int object, const mString &type);
+    void checkCompileErrors(unsigned int object, const mString &type) const;
 };

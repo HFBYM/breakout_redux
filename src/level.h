@@ -2,7 +2,6 @@
 #include"brick.h"
 #include<vector>
 #include<memory>
-class mString;
 class Level
 {
 public:

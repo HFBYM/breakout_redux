@@ -1,6 +1,6 @@
 #include "level.h"
 #include "Resource_manager.h"
-#include "check.h"
+#include <iostream>
 
 static void load(const mString &path, std::vector<std::vector<unsigned int>> &tileData)
 {
@@ -22,14 +22,22 @@ static void load(const mString &path, std::vector<std::vector<unsigned int>> &ti
 		}
 		row.push_back(c - 48);
 	}
-	ASSERT_LOG(tileData.size() > 1, "ERROR::LEVEL: file " << path.getStr() << " has wrong data");
+	if (tileData.size() <= 1)
+		throw std::runtime_error("ERROR::LEVEL: loading file ");
 }
 
 Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsigned int levelHeight)
 {
 	std::vector<std::vector<unsigned int>> tileData;
-	load(path, tileData);
-
+	try
+	{
+		load(path, tileData);
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << path.getStr() << " has wrong data" << std::endl;
+	}
 	// get the number of lives in the last line
 	this->lives = tileData[tileData.size() - 1][0];
 
@@ -58,22 +66,31 @@ Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsi
 			else
 			{
 				glm::vec3 color(1.0f);
-				switch (tileData[y][x])
+				try
 				{
-				case Brick::BLUE:
-					color = glm::vec3(0.2f, 0.6f, 1.0f);
-					break;
-				case Brick::GREEN:
-					color = glm::vec3(0.0f, 0.7f, 0.0f);
-					break;
-				case Brick::YELLOW:
-					color = glm::vec3(0.8f, 0.8f, 0.4f);
-					break;
-				case Brick::RED:
-					color = glm::vec3(1.0f, 0.5f, 0.0f);
-					break;
-				default:
-					ERROR_LOG("ERROR::LEVEL: unnamed type of brick in " << path.getStr());
+					switch (tileData[y][x])
+					{
+					case Brick::BLUE:
+						color = glm::vec3(0.2f, 0.6f, 1.0f);
+						break;
+					case Brick::GREEN:
+						color = glm::vec3(0.0f, 0.7f, 0.0f);
+						break;
+					case Brick::YELLOW:
+						color = glm::vec3(0.8f, 0.8f, 0.4f);
+						break;
+					case Brick::RED:
+						color = glm::vec3(1.0f, 0.5f, 0.0f);
+						break;
+					default:
+						throw std::runtime_error("ERROR::LEVEL: category of brick is wrong");
+					}
+				}
+				catch (std::exception &e)
+				{
+					std::cerr << e.what() << std::endl;
+					std::cerr << "unnamed type of brick in " << path.getStr() << std::endl;
+					color = glm::vec3(1.0f);
 				}
 				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block", static_cast<Brick::BrickType>(tileData[y][x]), false, color));
 			}
