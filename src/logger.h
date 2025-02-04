@@ -13,6 +13,7 @@ protected:
         // if doesn't clear, some will access invalid data and get errors
         data.clear();
     }
+    // just using the ptr
     std::map<mString, std::map<unsigned int, std::unique_ptr<T>>> data;
 
 public:

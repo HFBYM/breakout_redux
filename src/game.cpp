@@ -1,3 +1,6 @@
+#ifndef PROJECT_DIR
+#define PROJECT_DIR "."
+#endif
 #include "game.h"
 #include <glad.h>  //the glew lib is 32bit so we use glad
 #include <glfw3.h> //this lib shuld be included after glad
@@ -9,6 +12,7 @@
 #include "movement.h"
 #include "collision.h"
 #include "ball.h"
+#include "particle_generator.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -111,9 +115,9 @@ void Game::run()
 		// trigger the events such as mouse and keyboard
 		glfwPollEvents();
 
-		// TODO update all
 		ball->setPos(player->getPos(), player->getSize());
 		level->Rotate();
+		ParticleGenerator::instance().update(deltaTime);
 
 		Renderer::instance().render(init_screen_width, init_screen_height);
 

@@ -105,4 +105,12 @@ void Renderer::render(unsigned int width, unsigned int height)
     {
         draw(va, *ball, width, height);
     }
+    // using this function to enhance the color of the particle
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    for(const auto &[_, particle] : data["Particle"])
+    { 
+        draw(va, *particle, width, height);
+    }
+    // restore the blend function
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

@@ -1,12 +1,13 @@
 #include "ball.h"
 #include "keyval.h"
+#include"particle_generator.h"
 
 std::unique_ptr<std::unique_ptr<MoveObj>[]> Ball::ball_range(std::make_unique<std::unique_ptr<MoveObj>[]>(4));
 // TODO randon speed
 static const glm::vec2 init_ball_velocity(200.0f, -450.0f);
 
 Ball::Ball(unsigned int screen_width, unsigned int screen_height, glm::vec3 color, float radius)
-    : screen_height(screen_height), screen_width(screen_width), radius(radius), RenderObj("basketball", "sprite", color),
+    : screen_height(screen_height), screen_width(screen_width), radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)),
       Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball")
 {
     static bool is_init_range = false;
@@ -49,6 +50,7 @@ void Ball::do_collision(const mString &message, const glm::vec2 &reflect, const 
     pos += offset;
     if (message == "Player")
         velocity.y = -abs(velocity.y);
+
 }
 void Ball::processInput(int key, int action)
 {
@@ -58,6 +60,11 @@ void Ball::processInput(int key, int action)
         {
             isSticked = false;
             velocity = init_ball_velocity;
+
+            static bool once = true;
+            if (once)
+                ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, color, false));
+            once = false;
         }
         else
         {

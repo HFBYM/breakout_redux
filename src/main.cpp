@@ -1,7 +1,6 @@
 #include"game.h"
 int main()
 {
-    Game& breakout = Game::get_instance();
-    breakout.run();
+    Game::get_instance().run();
     return 0;
 }

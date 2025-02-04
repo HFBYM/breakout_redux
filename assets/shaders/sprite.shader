@@ -15,8 +15,8 @@ void main()
 in vec2 texCoord;
 
 uniform sampler2D image;	//ÎÆÀí²ÉÑùÆ÷
-uniform vec3 spriteColor;
+uniform vec4 spriteColor;
 void main()
 {
-	gl_FragColor = vec4(spriteColor, 1.0f) * texture(image, texCoord);
+	gl_FragColor = vec4(spriteColor) * texture(image, texCoord);
 }

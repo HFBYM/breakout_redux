@@ -10,9 +10,9 @@ struct RendererData
     const glm::vec2& pos;       
     const glm::vec2& size;
     const float& rotate;
-    const glm::vec3& color;
+    const glm::vec4& color;
     RendererData(const mString& shader_name, const mString& texture, const glm::vec2& pos, 
-        const glm::vec2& size, float& rotate, const glm::vec3& color):shader_name(shader_name), 
+        const glm::vec2& size, float& rotate, const glm::vec4& color):shader_name(shader_name), 
         texture_name(texture), pos(pos), size(size), rotate(rotate), color(color){ }
 };
 class Renderer:public Logger<RendererData>

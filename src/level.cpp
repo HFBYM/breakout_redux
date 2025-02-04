@@ -90,7 +90,7 @@ Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsi
 				{
 					std::cerr << e.what() << std::endl;
 					std::cerr << "unnamed type of brick in " << path.getStr() << std::endl;
-					color = glm::vec3(1.0f);
+					color = glm::vec4(1.0f);
 				}
 				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block", static_cast<Brick::BrickType>(tileData[y][x]), false, color));
 			}

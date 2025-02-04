@@ -6,7 +6,7 @@
 std::unique_ptr<std::unique_ptr<MoveObj>[]> Player::player_range_p(std::make_unique<std::unique_ptr<MoveObj>[]>(4));
 
 Player::Player(unsigned int width, unsigned int height, glm::vec3 color, glm::vec2 size)
-	: RenderObj("paddle", "sprite", color), init_screen_width(width), init_screen_height(height), Object(glm::vec2((width - size.x) / 2, height - size.y), size, "Player")
+	: RenderObj("paddle", "sprite", glm::vec4(color, 1.0f)), init_screen_width(width), init_screen_height(height), Object(glm::vec2((width - size.x) / 2, height - size.y), size, "Player")
 {
 	static bool is_init_range = false;
 	if (!is_init_range)

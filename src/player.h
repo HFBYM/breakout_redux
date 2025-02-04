@@ -5,8 +5,7 @@
 class Player : public RenderObj, public KeyboardObj, public MoveObj
 {
 public:
-	Player(unsigned int width, unsigned int height, glm::vec3 color = glm::vec3(1.0f),
-		   glm::vec2 size = getInitSize());
+	Player(unsigned int width, unsigned int height, glm::vec3 color = glm::vec3(1.0f), glm::vec2 size = getInitSize());
 	~Player();
 
 	virtual void log_all() override;
