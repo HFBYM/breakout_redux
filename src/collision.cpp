@@ -1,4 +1,5 @@
 #include "collision.h"
+#include<vector>
 
 // TODO 完善碰撞检测 斜角碰撞反弹 文件分类
 /// @brief check collision and return the direction of the force on the first object assuming the second object is static
@@ -73,6 +74,7 @@ void Collision::collision(float dt)
 				player->func("Player_Range", temp.first, temp.second);
 		}
 	}
+
 	for (auto &[_, ball] : data["Ball"])
 	{
 		for (auto &[__, ball_range] : data["Ball_Range"])

@@ -1,14 +1,15 @@
 #include "ball.h"
 #include "keyval.h"
-#include"particle_generator.h"
+#include "particle_generator.h"
+#include "soundEngine.h"
+#include <iostream>
 
 std::unique_ptr<std::unique_ptr<MoveObj>[]> Ball::ball_range(std::make_unique<std::unique_ptr<MoveObj>[]>(4));
-// TODO randon speed
+// TODO randon speed and delete
 static const glm::vec2 init_ball_velocity(200.0f, -450.0f);
 
 Ball::Ball(unsigned int screen_width, unsigned int screen_height, glm::vec3 color, float radius)
-    : screen_height(screen_height), screen_width(screen_width), radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)),
-      Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball")
+    : screen_height(screen_height), screen_width(screen_width), radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball")
 {
     static bool is_init_range = false;
     if (!is_init_range)
@@ -21,6 +22,8 @@ Ball::Ball(unsigned int screen_width, unsigned int screen_height, glm::vec3 colo
             ball_range[i]->log_collision();
     }
     is_init_range = true;
+    velocity = init_ball_velocity;
+    ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, this->color, false));
 }
 
 Ball::~Ball()
@@ -30,8 +33,6 @@ Ball::~Ball()
 
 void Ball::log_all()
 {
-    log_collision();
-    log_move();
     log_renderer();
     log_keyboard();
 }
@@ -49,8 +50,12 @@ void Ball::do_collision(const mString &message, const glm::vec2 &reflect, const 
     velocity = glm::reflect(velocity, glm::normalize(reflect));
     pos += offset;
     if (message == "Player")
+    {
         velocity.y = -abs(velocity.y);
-
+        std::cout << "Ball is collided with " << message.getStr() << std::endl;
+        if (!isSticked)
+            SoundEngine::instance().play_music(SoundEngine::Song::BLEEPWAV);
+    }
 }
 void Ball::processInput(int key, int action)
 {
@@ -59,21 +64,23 @@ void Ball::processInput(int key, int action)
         if (isSticked)
         {
             isSticked = false;
-            velocity = init_ball_velocity;
+
+            log_move();
+            log_collision();
 
             static bool once = true;
             if (once)
-                ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, color, false));
-            once = false;
+                once = false;
         }
         else
         {
             isSticked = true;
-            velocity = glm::vec2(0.0f);
+            detach_move();
+            detach_collision();
         }
     }
 }
-
+// TODO 双人模式绑定挡板
 void Ball::setPos(const glm::vec2 &player_pos, const glm::vec2 &player_size)
 {
     if (isSticked)

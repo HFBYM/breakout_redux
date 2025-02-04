@@ -13,6 +13,7 @@
 #include "collision.h"
 #include "ball.h"
 #include "particle_generator.h"
+#include "soundEngine.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -94,6 +95,8 @@ Game::Game()
 	ball = std::make_unique<Ball>(init_screen_width, init_screen_height);
 	ball->log_all();
 	ball->setPos(player->getPos(), player->getSize());
+
+	SoundEngine::instance().play_music(SoundEngine::Song::BGM);
 }
 
 void Game::run()

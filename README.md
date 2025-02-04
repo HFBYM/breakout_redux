@@ -13,7 +13,7 @@ I am not a professional game developer, nor a professional C++ programmer. This 
 
 ## TODO 功能实现
 
-后期处理 道具 音效 文本 优化 动态篮球 变化固体块 更准确的碰撞算法 分utils 用户UI 动画 历史记录保存 隐身
+道具(隐身) 后期处理 文本 变化固体块 更准确的碰撞算法 用户UI 历史记录保存 双人模式 分utils
 
 ## Dependencies
 
