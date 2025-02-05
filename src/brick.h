@@ -6,7 +6,7 @@
 class Brick:public RenderObj, public MoveObj
 {
 public:
-	enum BrickType {
+	enum class BrickType {
 		NONE = 0, SOLID, BLUE, GREEN, YELLOW, RED
 	};
 
@@ -22,7 +22,7 @@ public:
 	/// @brief when a brick is hit it should have cleaned all the logging and generate particles
 	virtual void do_collision(const mString& message, const glm::vec2& reflect, const glm::vec2& offset) override;
 private:
-	BrickType type = NONE;
+	BrickType type;
 
 	bool isSolid = false;
 };

@@ -49,7 +49,7 @@ void Ball::do_collision(const mString &message, const glm::vec2 &reflect, const 
 {
     velocity = glm::reflect(velocity, glm::normalize(reflect));
     pos += offset;
-    if (message == "Player")
+    if (message == "Pad")
     {
         velocity.y = -abs(velocity.y);
         std::cout << "Ball is collided with " << message.getStr() << std::endl;
@@ -81,11 +81,11 @@ void Ball::processInput(int key, int action)
     }
 }
 // TODO 双人模式绑定挡板
-void Ball::setPos(const glm::vec2 &player_pos, const glm::vec2 &player_size)
+void Ball::setPos(const glm::vec2 &pad_pos, const glm::vec2 &pad_size)
 {
     if (isSticked)
     {
-        pos.x = player_pos.x + player_size.x / 2 - radius;
-        pos.y = player_pos.y - 2 * radius;
+        pos.x = pad_pos.x + pad_size.x / 2 - radius;
+        pos.y = pad_pos.y - 2 * radius;
     }
 }

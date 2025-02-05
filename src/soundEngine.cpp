@@ -1,4 +1,5 @@
 #include "soundEngine.h"
+#include"debug.h"
 #ifndef PROJECT_DIR
 #define PROJECT_DIR "."
 #endif
@@ -11,23 +12,23 @@ void SoundEngine::play_music(Song song)
 {
     switch (song)
     {
-    case BGM:
+    case Song::BGM:
         sound_engine->play2D(PROJECT_DIR "/assets/music/breakout.mp3", true);
         break;
-    case SOLID:
+    case Song::SOLID:
         sound_engine->play2D(PROJECT_DIR "/assets/music/solid.wav", false);
         break;
-    case BLEEPMP3:
+    case Song::BLEEPMP3:
         sound_engine->play2D(PROJECT_DIR "/assets/music/bleep.mp3", false);
         break;
-    case BLEEPWAV:
+    case Song::BLEEPWAV:
         sound_engine->play2D(PROJECT_DIR "/assets/music/bleep.wav", false);
         break;
-    case POWERUP:
+    case Song::POWERUP:
         sound_engine->play2D(PROJECT_DIR "/assets/music/powerup.wav", false);
         break;
     default:
-        __debugbreak();
+        MDEBUG();
         break;
     }
 }

@@ -1,4 +1,4 @@
-#include"Debug.h"
+#include"debug.h"
 #include<glad.h>
 #include<glfw3.h>
 #include<iostream>
@@ -34,5 +34,5 @@ void check(const char* file, int line)
 
 		} while (error = glGetError() != GL_NO_ERROR);
 	}
-	__debugbreak();
+	MDEBUG();
 }

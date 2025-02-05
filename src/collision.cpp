@@ -1,5 +1,5 @@
 #include "collision.h"
-#include<vector>
+#include <vector>
 
 // TODO 完善碰撞检测 斜角碰撞反弹 文件分类
 /// @brief check collision and return the direction of the force on the first object assuming the second object is static
@@ -63,18 +63,46 @@ static std::pair<glm::vec2, glm::vec2> check_collision(const glm::vec2 &pos_one,
 /// @brief access collision data and process
 void Collision::collision(float dt)
 {
-	// bricks would change the log data so it should be out of the loop
-	std::vector<unsigned int> bricks;
-	for (auto &[_, player] : data["Player"])
+	std::vector<unsigned int> buffs_with_pad;
+	for (auto &[_, pad] : data["Pad"])
 	{
-		for (auto &[__, player_range] : data["Player_Range"])
+		for (auto &[__, pad_range] : data["Pad_Range"])
 		{
-			auto temp = check_collision(player->pos, player->size, player->velocity, player_range->pos, player_range->size, player_range->velocity, dt);
+			auto temp = check_collision(pad->pos, pad->size, pad->velocity, pad_range->pos, pad_range->size, pad_range->velocity, dt);
 			if (temp.first != glm::vec2(0, 0))
-				player->func("Player_Range", temp.first, temp.second);
+				pad->func("Pad_Range", temp.first, temp.second);
+		}
+		for(auto&[id, buff]:data["Buff"])
+		{
+			auto temp = check_collision(pad->pos, pad->size, pad->velocity, buff->pos, buff->size, buff->velocity, dt);
+			if (temp.first != glm::vec2(0, 0))
+			{
+				buffs_with_pad.push_back(id);
+				// using the function to pass the id
+				pad->func("Buff", glm::vec2(id, 0.0f), glm::vec2(0.0f));
+			}
 		}
 	}
 
+	for (auto &buff: buffs_with_pad)
+		data["Buff"][buff]->func("buff_with_pad", glm::vec2(0.0), glm::vec2(0.0));
+
+	std::vector<unsigned int> buffs_with_range;
+	for (auto &[id, buff] : data["Buff"])
+	{
+		for (auto &[__, buff_range] : data["Buff_Range"])
+		{
+			auto temp = check_collision(buff->pos, buff->size, buff->velocity, buff_range->pos, buff_range->size, buff_range->velocity, dt);
+			if (temp.first != glm::vec2(0, 0))
+				buffs_with_range.push_back(id);
+		}
+	}
+
+	for (auto &buff: buffs_with_range)
+		data["Buff"][buff]->func("buff_with_range", glm::vec2(0.0), glm::vec2(0.0));
+
+	// bricks would change the log data so it should be out of the loop
+	std::vector<unsigned int> bricks;
 	for (auto &[_, ball] : data["Ball"])
 	{
 		for (auto &[__, ball_range] : data["Ball_Range"])
@@ -83,11 +111,11 @@ void Collision::collision(float dt)
 			if (temp.first != glm::vec2(0, 0))
 				ball->func("Ball_Range", temp.first, temp.second);
 		}
-		for (auto &[__, player] : data["Player"])
+		for (auto &[__, pad] : data["Pad"])
 		{
-			auto temp = check_collision(ball->pos, ball->size, ball->velocity, player->pos, player->size, player->velocity, dt);
+			auto temp = check_collision(ball->pos, ball->size, ball->velocity, pad->pos, pad->size, pad->velocity, dt);
 			if (temp.first != glm::vec2(0, 0))
-				ball->func("Player", temp.first, temp.second);
+				ball->func("Pad", temp.first, temp.second);
 		}
 		for (auto &[id, brick] : data["Brick"])
 		{
@@ -99,6 +127,7 @@ void Collision::collision(float dt)
 			}
 		}
 	}
+
 	for (auto &brick : bricks)
 		data["Brick"][brick]->func("Ball", glm::vec2(0.0), glm::vec2(0.0));
 }

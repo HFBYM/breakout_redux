@@ -57,29 +57,29 @@ Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsi
 			// the leftup is origin
 			glm::vec2 pos(unit_width * x, unit_height * y);
 			glm::vec2 size(unit_width, unit_height);
-			if (tileData[y][x] == Brick::SOLID)
+			if (tileData[y][x] == static_cast<unsigned int>(Brick::BrickType::SOLID))
 			{
-				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block_solid", Brick::SOLID, true, glm::vec3(0.8f, 0.8f, 0.7f)));
+				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block_solid", Brick::BrickType::SOLID, true, glm::vec3(0.8f, 0.8f, 0.7f)));
 			}
-			else if (tileData[y][x] == Brick::NONE)
+			else if (tileData[y][x] == static_cast<unsigned int>(Brick::BrickType::NONE))
 				continue;
 			else
 			{
 				glm::vec3 color(1.0f);
 				try
 				{
-					switch (tileData[y][x])
+					switch (static_cast<Brick::BrickType>(tileData[y][x]))
 					{
-					case Brick::BLUE:
+					case Brick::BrickType::BLUE:
 						color = glm::vec3(0.2f, 0.6f, 1.0f);
 						break;
-					case Brick::GREEN:
+					case Brick::BrickType::GREEN:
 						color = glm::vec3(0.0f, 0.7f, 0.0f);
 						break;
-					case Brick::YELLOW:
+					case Brick::BrickType::YELLOW:
 						color = glm::vec3(0.8f, 0.8f, 0.4f);
 						break;
-					case Brick::RED:
+					case Brick::BrickType::RED:
 						color = glm::vec3(1.0f, 0.5f, 0.0f);
 						break;
 					default:

@@ -1,4 +1,5 @@
 #include "mString.h"
+#include"debug.h"
 #include <iostream>
 mString::mString(const char *str)
 {
@@ -100,7 +101,7 @@ char &mString::operator[](unsigned int index)
 	catch (const char *e)
 	{
 		std::cerr << e << ptr.get() << std::endl;
-		__debugbreak();
+		MDEBUG();
 	}
 	return ptr[index];
 }

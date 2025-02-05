@@ -4,7 +4,7 @@
 class SoundEngine
 {
 public:
-    enum Song{
+    enum class Song{
         BGM = 0,
         SOLID,
         BLEEPMP3,

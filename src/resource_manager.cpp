@@ -7,6 +7,10 @@
 #include "mString.h"
 #include <memory>
 #include <iostream>
+#include"debug.h"
+#ifndef PROJECT_DIR
+#define PROJECT_DIR "."
+#endif
 
 void ResourceManager::loadShader(const mString &file, const mString &name)
 {
@@ -26,13 +30,13 @@ void ResourceManager::loadShader(const mString &file, const mString &name)
 	std::stringstream ss[2];
 
 	// use enum type for classification
-	enum Type
+	enum class Type
 	{
 		NONE = -1,
 		VERTEX = 0,
 		FRAGMENT = 1
 	};
-	Type type = NONE;
+	Type type = Type::NONE;
 
 	// record if anything is found
 	bool v_found = false, f_found = false;
@@ -42,19 +46,19 @@ void ResourceManager::loadShader(const mString &file, const mString &name)
 		{
 			if (line.find("vertex") != std::string::npos)
 			{
-				type = VERTEX;
+				type = Type::VERTEX;
 				v_found = true;
 			}
 			else if (line.find("fragment") != std::string::npos)
 			{
-				type = FRAGMENT;
+				type = Type::FRAGMENT;
 				f_found = true;
 			}
 			// if the type is find just skip the turn cause it the "#shader" couldn't be compiled
 			continue;
 		}
 		// remember the endl which shader needs but ignored by getline
-		ss[type] << line << std::endl;
+		ss[static_cast<int>(type)] << line << std::endl;
 	}
 	try
 	{
@@ -69,7 +73,7 @@ void ResourceManager::loadShader(const mString &file, const mString &name)
 		std::cerr << "name: " << name.getStr() << " in\t" << file.getStr() << std::endl;
 		return;
 	}
-	shaders[name] = std::make_unique<Shader>(name, ss[VERTEX].str().c_str(), ss[FRAGMENT].str().c_str());
+	shaders[name] = std::make_unique<Shader>(name, ss[static_cast<int>(Type::VERTEX)].str().c_str(), ss[static_cast<int>(Type::FRAGMENT)].str().c_str());
 }
 
 void ResourceManager::loadTexture(const mString &file, bool has_alpha, const mString &name)
@@ -130,7 +134,7 @@ const Shader &ResourceManager::getShader(const mString &name)
 	{
 		std::cerr << e.what() << std::endl;
 		std::cerr << "name: " << name.getStr() << std::endl;
-		__debugbreak();
+		MDEBUG();
 	}
 	return *shaders[name];
 }
@@ -145,7 +149,7 @@ const Texture2D &ResourceManager::getTexture(const mString &name)
 	{
 		std::cerr << e.what() << std::endl;
 		std::cerr << "name: " << name.getStr() << std::endl;
-		__debugbreak();
+		MDEBUG();
 	}
 	return *textures[name];
 }

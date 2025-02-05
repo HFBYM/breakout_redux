@@ -1,18 +1,9 @@
 #include "particle_generator.h"
-#include <random>
 #include <iostream>
+#include"random.h"
 
 static const unsigned int particles_num = 20;
 static const float particle_size = 10.0f;
-
-/// @brief Generates a random float between 0 and range
-static float randomFloat(float range)
-{
-    static std::random_device seed;
-    static std::mt19937 generator(seed());
-    static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
-    return range * distribution(generator);
-}
 
 ParticleData::ParticleData(const glm::vec2 &master_pos, const glm::vec2 &master_velocity, const glm::vec2 &master_size, const glm::vec4 &master_color, bool isSingleUse)
     : master_pos(master_pos), master_velocity(master_velocity), isSingleUse(isSingleUse), master_size(master_size), master_color(master_color)
@@ -88,8 +79,8 @@ ParticleGenerator::ParticleGenerator()
 void Particle::set(const glm::vec2 &master_pos, const glm::vec2 &master_velocity, const glm::vec2 &master_size, const glm::vec4 &master_color, float range)
 {
     glm::vec2 pos;
-    pos.x = 2 * randomFloat(range) - range;
-    pos.y = 2 * randomFloat(range) - range;
+    pos.x = 2 * Random::instance().randomFloat(range) - range;
+    pos.y = 2 * Random::instance().randomFloat(range) - range;
 
     // standardlize endurence
     this->endurance = (range * sqrt(2.0f) - glm::length(pos)) / range * sqrt(2.0f);

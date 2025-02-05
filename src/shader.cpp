@@ -5,6 +5,7 @@
 #include <gtc\type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <iostream>
+#include"debug.h"
 
 Shader::Shader(const mString &name, const mString &vertexSource, const mString &fragmentSouce)
     : m_name(name)
@@ -37,7 +38,7 @@ Shader::Shader(const mString &name, const mString &vertexSource, const mString &
         std::cerr << std::get<0>(e).getStr() << std::endl;
         std::cerr << "name: " << m_name.getStr() << "type: " << std::get<2>(e).getStr() << std::endl;
         std::cerr << std::get<1>(e).getStr() << std::endl;
-        __debugbreak();
+        MDEBUG();
     }
     // program is created so these is out of use
     glDeleteShader(sVertex);

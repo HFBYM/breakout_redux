@@ -8,7 +8,7 @@
 #include "resource_manager.h"
 #include "renderer.h"
 #include "level.h"
-#include "player.h"
+#include "pad.h"
 #include "movement.h"
 #include "collision.h"
 #include "ball.h"
@@ -89,12 +89,15 @@ Game::Game()
 	level = std::make_unique<Level>(0, PROJECT_DIR "/assets/levels/level_1.lvl", init_screen_width, init_screen_height / 2);
 	level->log_all();
 
-	player = std::make_unique<Player>(init_screen_width, init_screen_height);
-	player->log_all();
+	pad = std::make_unique<Pad>(init_screen_width, init_screen_height);
+	pad->log_all();
 
 	ball = std::make_unique<Ball>(init_screen_width, init_screen_height);
 	ball->log_all();
-	ball->setPos(player->getPos(), player->getSize());
+	ball->setPos(pad->getPos(), pad->getSize());
+
+	background = std::make_unique<RenderObj>("Background", glm::vec2(0.0f), glm::vec2(init_screen_width, init_screen_height), "background", "sprite");
+	background->log_renderer();
 
 	SoundEngine::instance().play_music(SoundEngine::Song::BGM);
 }
@@ -118,7 +121,7 @@ void Game::run()
 		// trigger the events such as mouse and keyboard
 		glfwPollEvents();
 
-		ball->setPos(player->getPos(), player->getSize());
+		ball->setPos(pad->getPos(), pad->getSize());
 		level->Rotate();
 		ParticleGenerator::instance().update(deltaTime);
 

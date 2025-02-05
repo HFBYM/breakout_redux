@@ -14,7 +14,7 @@ public:
 	RenderObj(const mString& tex, const mString& shader, glm::vec4 color = glm::vec4(1.0f), float rotate = 0.0f) :
 		color(color), tex(tex), shader(shader), rotate(rotate), Object("RenderObj") { }
 
-    /// @brief this can let RenderObj have  independent instance 
+    /// @brief this can let RenderObj have independent instance 
     RenderObj(const mString& id_name, const glm::vec2& pos, const glm::vec2& size, const mString& tex, 
 		const mString& shader, glm::vec4 color = glm::vec4(1.0f), float rotate = 0.0f) :Object(pos, size, id_name),
 		color(color), tex(tex), shader(shader), rotate(rotate){ }

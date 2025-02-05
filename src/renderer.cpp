@@ -93,24 +93,25 @@ void Renderer::render(unsigned int width, unsigned int height)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    for(const auto&[_, background] : data["Background"])
+        draw(va, *background, width, height);
     for (const auto &[_, brick] : data["Brick"])
-    {
         draw(va, *brick, width, height);
-    }
-    for (const auto &[_, player] : data["Player"])
-    {
-        draw(va, *player, width, height);
-    }
-    for (const auto &[_, ball] : data["Ball"])
-    {
-        draw(va, *ball, width, height);
-    }
+
     // using this function to enhance the color of the particle
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     for(const auto &[_, particle] : data["Particle"])
-    { 
         draw(va, *particle, width, height);
-    }
+    
     // restore the blend function
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    for (const auto &[_, pad] : data["Pad"])
+        draw(va, *pad, width, height);
+        
+    for (const auto &[_, ball] : data["Ball"])
+        draw(va, *ball, width, height);
+    for(const auto&[_, buff]: data["Buff"])
+        draw(va, *buff, width, height);
+
 }
