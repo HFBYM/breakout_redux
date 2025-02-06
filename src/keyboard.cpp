@@ -12,10 +12,8 @@ void KeyBoard:: key_callback(GLFWwindow* window, int key, int scancode, int acti
 		MDEBUG();
 	else if (action == GLFW_PRESS || action == GLFW_RELEASE)
 	{
-		for (auto& [id, data] : data["Pad"])
-			data->func_p(key, action);
-		for (auto& [id, data] : data["Ball"])
-			data->func_p(key, action);
+		for(auto&[id, player]:data["Player"])
+			player->func_p(key, action);
 	}
 	else
 		return;

@@ -8,12 +8,11 @@
 #include "resource_manager.h"
 #include "renderer.h"
 #include "level.h"
-#include "pad.h"
 #include "movement.h"
 #include "collision.h"
-#include "ball.h"
 #include "particle_generator.h"
 #include "soundEngine.h"
+#include"player.h"
 
 /// @brief the width and height of the window
 static int init_screen_width = 800;
@@ -89,12 +88,8 @@ Game::Game()
 	level = std::make_unique<Level>(0, PROJECT_DIR "/assets/levels/level_1.lvl", init_screen_width, init_screen_height / 2);
 	level->log_all();
 
-	pad = std::make_unique<Pad>(init_screen_width, init_screen_height);
-	pad->log_all();
-
-	ball = std::make_unique<Ball>(init_screen_width, init_screen_height);
-	ball->log_all();
-	ball->setPos(pad->getPos(), pad->getSize());
+	player = std::make_unique<Player>(init_screen_width, init_screen_height);
+	player->log_all();
 
 	background = std::make_unique<RenderObj>("Background", glm::vec2(0.0f), glm::vec2(init_screen_width, init_screen_height), "background", "sprite");
 	background->log_renderer();
@@ -121,8 +116,8 @@ void Game::run()
 		// trigger the events such as mouse and keyboard
 		glfwPollEvents();
 
-		ball->setPos(pad->getPos(), pad->getSize());
 		level->Rotate();
+		player->update(deltaTime);
 		ParticleGenerator::instance().update(deltaTime);
 
 		Renderer::instance().render(init_screen_width, init_screen_height);

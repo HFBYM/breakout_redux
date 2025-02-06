@@ -1,28 +1,29 @@
 #pragma once
 #include "renderObj.h"
 #include "moveObj.h"
-#include "keyboardObj.h"
-class Ball : public RenderObj, public MoveObj, public KeyboardObj
+class Ball : public RenderObj, public MoveObj
 {
 private:
     float radius = 0.0f;
-    unsigned int screen_width = 0;
-    unsigned int screen_height = 0;
     bool isSticked = true;
+    bool isThrough = false;
 
-    /// @brief generate the ball range
-    static std::unique_ptr<std::unique_ptr<MoveObj>[]> ball_range;
+    void do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
 
 public:
     /// @brief the ball need the pad position and size to set the ball position any time
-    Ball(unsigned int screen_width, unsigned int screen_height, glm::vec3 color = glm::vec3(1.0f), float radius = 25.0f);
+    Ball(glm::vec3 color = glm::vec3(1.0f), float radius = 25.0f);
 
     ~Ball();
 
-    virtual void log_all() override;
-    virtual void detach_all() override;
-    virtual void do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
-    virtual void processInput(int key, int action) override;
+    void log_all() override;
+    void detach_all() override;
+
+    void processInput(int key, bool action);
 
     void setPos(const glm::vec2 &pad_pos, const glm::vec2 &pad_size);
+    void setSticked(bool sticked) { isSticked = sticked; }
+    void setThrough(bool through) { isThrough = through; }
+    void setColor(glm::vec3 color) { this->color = glm::vec4(color, 1.0f); }
+    void setStealth(bool stealth);
 };

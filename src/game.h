@@ -1,9 +1,8 @@
 #pragma once
 #include <memory>
 class Level;
-class Ball;
-class Pad;
 class RenderObj;
+class Player;
 /// @brief This is a singleton rather than a static one cause some functions can't be called anywhere
 class Game
 {
@@ -27,7 +26,6 @@ private:
 	Game &operator=(const Game &) = delete;
 
 	std::unique_ptr<Level> level;
-	std::unique_ptr<Ball> ball;
-	std::unique_ptr<Pad> pad;
 	std::unique_ptr<RenderObj> background;
+	std::unique_ptr<Player> player;
 };

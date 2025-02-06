@@ -5,8 +5,8 @@ struct MovementData
 {
     glm::vec2 &pos;
     glm::vec2 &volecity;
-    glm::vec2 &accelerate;
-    MovementData(glm::vec2 &pos, glm::vec2 &volecity, glm::vec2 &accelerate) : pos(pos), volecity(volecity), accelerate(accelerate) {}
+    glm::vec3 &accelerate;
+    MovementData(glm::vec2 &pos, glm::vec2 &volecity, glm::vec3 &accelerate) : pos(pos), volecity(volecity), accelerate(accelerate) {}
 };
 
 class Movement:public Logger<MovementData>

@@ -72,6 +72,12 @@ void Collision::collision(float dt)
 			if (temp.first != glm::vec2(0, 0))
 				pad->func("Pad_Range", temp.first, temp.second);
 		}
+		for (auto &[__, range] : data["Range"])
+		{
+			auto temp = check_collision(pad->pos, pad->size, pad->velocity, range->pos, range->size, range->velocity, dt);
+			if (temp.first != glm::vec2(0, 0))
+				pad->func("Range", temp.first, temp.second);
+		}
 		for(auto&[id, buff]:data["Buff"])
 		{
 			auto temp = check_collision(pad->pos, pad->size, pad->velocity, buff->pos, buff->size, buff->velocity, dt);
@@ -79,7 +85,7 @@ void Collision::collision(float dt)
 			{
 				buffs_with_pad.push_back(id);
 				// using the function to pass the id
-				pad->func("Buff", glm::vec2(id, 0.0f), glm::vec2(0.0f));
+				pad->func("Buff", glm::vec2(static_cast<float>(id), 0.0f), glm::vec2(0.0f));
 			}
 		}
 	}
@@ -105,7 +111,7 @@ void Collision::collision(float dt)
 	std::vector<unsigned int> bricks;
 	for (auto &[_, ball] : data["Ball"])
 	{
-		for (auto &[__, ball_range] : data["Ball_Range"])
+		for (auto &[__, ball_range] : data["Range"])
 		{
 			auto temp = check_collision(ball->pos, ball->size, ball->velocity, ball_range->pos, ball_range->size, ball_range->velocity, dt);
 			if (temp.first != glm::vec2(0, 0))

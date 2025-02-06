@@ -7,12 +7,24 @@ class BuffManager
 public:
     enum class BuffType
     {
+        NONE,
         SPEED,
         STICKY,
         PASS_THROUGH,
         PAD_SIZE_INCREASE,
         CHAOS,
-        ICY
+        ICY,
+        CLEAN,
+        STEALTH
+    };
+
+    /// @brief the buff endure time by second
+    enum class BuffTime
+    {
+        PASS_THROUGH = 10,
+        CHAOS = 10,
+        ICY = 10,
+        STEALTH = 10
     };
 
     class Buff : public RenderObj, public MoveObj
@@ -24,8 +36,11 @@ public:
         void log_all() override;
         void detach_all() override;
 
+        BuffType getType() { return type; }
+        unsigned int getId() { return id_num; }
+
     private:
-        BuffType type;
+        BuffType type = BuffType::NONE;
 
         static mString getTex(BuffType type);
         static glm::vec3 getColor(BuffType type);
@@ -42,6 +57,9 @@ public:
     /// @brief create the buff randonly
     void createBuff(const glm::vec2 &master_pos, const glm::vec2 &buffSize);
 
+    /// @brief return the buff type by id
+    BuffManager::BuffType getTypebyId(unsigned int id);
+
 private:
     /// @brief stand by the percentage
     enum class BuffRate
@@ -51,7 +69,9 @@ private:
         PASS_THROUGH = 10,
         PAD_SIZE_INCREASE = 10,
         CHAOS = 10,
-        ICY = 10
+        ICY = 10,
+        CLEAN = 10,
+        STEALTH = 10
     };
     BuffManager();
     ~BuffManager();

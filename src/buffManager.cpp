@@ -1,10 +1,13 @@
 #include "buffManager.h"
 #include "random.h"
 #include "soundEngine.h"
+#include <iostream>
 
+//TODO 更好的等概率生成
 void BuffManager::createBuff(const glm::vec2 &master_pos, const glm::vec2 &size)
 {
     float chance = Random::instance().randomFloat(100.0f);
+    std::cout << chance << std::endl;
     if (chance < static_cast<float>(BuffRate::SPEED))
         buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::SPEED));
     else if (chance < static_cast<float>(BuffRate::STICKY) + static_cast<float>(BuffRate::SPEED))
@@ -17,8 +20,22 @@ void BuffManager::createBuff(const glm::vec2 &master_pos, const glm::vec2 &size)
         buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::CHAOS));
     else if (chance < static_cast<float>(BuffRate::STICKY) + static_cast<float>(BuffRate::PASS_THROUGH) + static_cast<float>(BuffRate::PAD_SIZE_INCREASE) + static_cast<float>(BuffRate::CHAOS) + static_cast<float>(BuffRate::SPEED) + static_cast<float>(BuffRate::ICY))
         buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::ICY));
+    else if (chance < static_cast<float>(BuffRate::STICKY) + static_cast<float>(BuffRate::PASS_THROUGH) + static_cast<float>(BuffRate::PAD_SIZE_INCREASE) + static_cast<float>(BuffRate::CHAOS) + static_cast<float>(BuffRate::SPEED) + static_cast<float>(BuffRate::ICY) + static_cast<float>(BuffRate::CLEAN))
+        buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::CLEAN));
+    else if (chance < static_cast<float>(BuffRate::STICKY) + static_cast<float>(BuffRate::PASS_THROUGH) + static_cast<float>(BuffRate::PAD_SIZE_INCREASE) + static_cast<float>(BuffRate::CHAOS) + static_cast<float>(BuffRate::SPEED) + static_cast<float>(BuffRate::ICY) + static_cast<float>(BuffRate::CLEAN) + static_cast<float>(BuffRate::STEALTH))
+        buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::STEALTH));
     else
         return;
+}
+
+BuffManager::BuffType BuffManager::getTypebyId(unsigned int id)
+{
+    for (auto &buff : buffs)
+    {
+        if (buff->getId() == id)
+            return buff->getType();
+    }
+    return BuffManager::BuffType::NONE;
 }
 
 BuffManager::BuffManager()
@@ -31,7 +48,7 @@ BuffManager::~BuffManager()
     buffs.clear();
 }
 BuffManager::Buff::Buff(const glm::vec2 &master_pos, const glm::vec2 &size, BuffType type)
-    : RenderObj(getTex(type), "sprite", glm::vec4(getColor(type), 1.0f)), MoveObj(glm::vec2(0.0f, 150.0f)), Object(master_pos, size, "Buff")
+    : RenderObj(getTex(type), "sprite", glm::vec4(getColor(type), 1.0f)), MoveObj(glm::vec2(0.0f, 150.0f)), Object(master_pos, size, "Buff"), type(type)
 {
     log_all();
 }
@@ -73,6 +90,12 @@ mString BuffManager::Buff::getTex(BuffType type)
     case BuffType::ICY:
         return "tex_chaos";
         break;
+    case BuffType::CLEAN:
+        return "tex_confuse";
+        break;
+    case BuffType::STEALTH:
+        return "tex_speed";
+        break;
     default:
         return NULL;
         break;
@@ -87,19 +110,25 @@ glm::vec3 BuffManager::Buff::getColor(BuffType type)
         return glm::vec3(0.5f, 0.5f, 1.0f);
         break;
     case BuffType::STICKY:
-        return glm::vec3(1.0f, 0.5f, 1.0f);
+        return glm::vec3(1.00, 0.41, 0.71);
         break;
     case BuffType::PASS_THROUGH:
         return glm::vec3(0.5f, 1.0f, 0.5f);
         break;
     case BuffType::PAD_SIZE_INCREASE:
-        return glm::vec3(1.0f, 0.6f, 0.4f);
+        return glm::vec3(1.00, 0.65, 0.00);
         break;
     case BuffType::CHAOS:
         return glm::vec3(0.9f, 0.25f, 0.25f);
         break;
     case BuffType::ICY:
         return glm::vec3(0.0f, 0.87f, 1.0f);
+        break;
+    case BuffType::CLEAN:
+        return glm::vec3(0.00, 1.00, 1.00);
+        break;
+    case BuffType::STEALTH:
+        return glm::vec3(0.75, 0.75, 0.75);
         break;
     default:
         return glm::vec3(1.0f, 1.0f, 1.0f);
