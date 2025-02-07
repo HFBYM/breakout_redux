@@ -7,7 +7,6 @@
 void BuffManager::createBuff(const glm::vec2 &master_pos, const glm::vec2 &size)
 {
     float chance = Random::instance().randomFloat(100.0f);
-    std::cout << chance << std::endl;
     if (chance < static_cast<float>(BuffRate::SPEED))
         buffs.push_back(std::make_unique<Buff>(master_pos, size, BuffType::SPEED));
     else if (chance < static_cast<float>(BuffRate::STICKY) + static_cast<float>(BuffRate::SPEED))
@@ -122,7 +121,7 @@ glm::vec3 BuffManager::Buff::getColor(BuffType type)
         return glm::vec3(0.9f, 0.25f, 0.25f);
         break;
     case BuffType::ICY:
-        return glm::vec3(0.0f, 0.87f, 1.0f);
+        return glm::vec3(0.0f, 0.27f, 1.0f);
         break;
     case BuffType::CLEAN:
         return glm::vec3(0.00, 1.00, 1.00);

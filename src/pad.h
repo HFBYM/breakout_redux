@@ -13,20 +13,20 @@ public:
 		DOWN
 	};
 
-	Pad(unsigned int width, unsigned int height, std::function<void(unsigned int)> buff_process, glm::vec3 color = glm::vec3(1.0f), glm::vec2 size = getInitSize());
+	Pad(const glm::vec2& pos, std::function<void(unsigned int)> buff_process, glm::vec3 color = glm::vec3(1.0f), glm::vec2 size = getInitSize());
 	~Pad();
 
 	void log_all() override;
 	void detach_all() override;
 
 	void processInput(Key key, bool press);
-	void speedup(bool reset = false) { v = reset ? init_v : v * 1.2f; }
+	void speedup(bool reset = false);
 	void sizeIncrease(bool reset = false) { size.x = reset ? getInitSize().x : size.x + 25.0f; }
 
 	inline glm::vec2 getPos() { return pos; }
 	inline glm::vec2 getSize() { return size; }
 	void setChaos(bool chaos) { isChaos = chaos; }
-	void setIcy(bool icy) { isIcy = icy; accelerate.z = icy ? 1.0f : 0.0f; }
+	void setIcy(bool icy) { isIcy = icy; accelerate = icy ? glm::vec4(1.0f) : glm::vec4(0.0f); }
 
 private:
 	/// @brief this call back function to process buff

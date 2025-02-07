@@ -1,8 +1,9 @@
 #include "pad.h"
+#include"particle_generator.h"
 #include <memory>
 
-Pad::Pad(unsigned int width, unsigned int height, std::function<void(unsigned int)> buff_process, glm::vec3 color, glm::vec2 size)
-	: RenderObj("paddle", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2((width - size.x) / 2, height - size.y), size, "Pad"), buff_process(buff_process)
+Pad::Pad(const glm::vec2 &pos, std::function<void(unsigned int)> buff_process, glm::vec3 color, glm::vec2 size)
+	: RenderObj("paddle", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(pos.x - size.x / 2, pos.y - size.y), size, "Pad"), buff_process(buff_process)
 {
 }
 Pad::~Pad()
@@ -81,6 +82,14 @@ void Pad::processInput(Key key, bool press)
 		velocity = temp_v;
 }
 
+void Pad::speedup(bool reset)
+{
+	v = reset ? init_v : v * 1.2f;
+	if(!reset)
+	{
+		ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, this->color, true));
+	}
+}
 void Pad::do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
 	pos += offset;

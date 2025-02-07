@@ -20,8 +20,6 @@ void Movement::move(float dt)
 			}
 			else
 			{
-				temp.volecity.x += temp.accelerate.x * dt;	
-				temp.volecity.y += temp.accelerate.y * dt;
 				temp.pos += temp.volecity * dt;
 			}
 		}

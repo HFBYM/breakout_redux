@@ -7,6 +7,7 @@ private:
     float radius = 0.0f;
     bool isSticked = true;
     bool isThrough = false;
+    glm::vec3 init_color;
 
     void do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
 
@@ -25,5 +26,6 @@ public:
     void setSticked(bool sticked) { isSticked = sticked; }
     void setThrough(bool through) { isThrough = through; }
     void setColor(glm::vec3 color) { this->color = glm::vec4(color, 1.0f); }
+    void resetColor() { this->color = glm::vec4(init_color, color.a); }
     void setStealth(bool stealth);
 };

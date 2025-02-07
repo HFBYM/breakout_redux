@@ -15,10 +15,10 @@
 #include"player.h"
 
 /// @brief the width and height of the window
-static int init_screen_width = 800;
-static int init_screen_height = 600;
-static int screen_width;
-static int screen_height;
+static unsigned int init_screen_height = 600;
+static unsigned int init_screen_width = 800;
+static unsigned int screen_width;
+static unsigned int screen_height;
 
 static GLFWwindow *window = nullptr;
 
@@ -88,8 +88,11 @@ Game::Game()
 	level = std::make_unique<Level>(0, PROJECT_DIR "/assets/levels/level_1.lvl", init_screen_width, init_screen_height / 2);
 	level->log_all();
 
-	player = std::make_unique<Player>(init_screen_width, init_screen_height);
-	player->log_all();
+	player_1 = std::make_unique<Player>(init_screen_width, init_screen_height, Player::PlayerID::Player1);
+	player_1->log_all();
+
+	player_2 = std::make_unique<Player>(init_screen_width, init_screen_height, Player::PlayerID::Player2);
+	player_2->log_all();
 
 	background = std::make_unique<RenderObj>("Background", glm::vec2(0.0f), glm::vec2(init_screen_width, init_screen_height), "background", "sprite");
 	background->log_renderer();
@@ -117,7 +120,8 @@ void Game::run()
 		glfwPollEvents();
 
 		level->Rotate();
-		player->update(deltaTime);
+		player_1->update(deltaTime);
+		player_2->update(deltaTime);
 		ParticleGenerator::instance().update(deltaTime);
 
 		Renderer::instance().render(init_screen_width, init_screen_height);

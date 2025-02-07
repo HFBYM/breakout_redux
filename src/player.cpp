@@ -5,10 +5,10 @@
 
 std::unique_ptr<std::unique_ptr<MoveObj>[]> Player::range(std::make_unique<std::unique_ptr<MoveObj>[]>(5));
 
-Player::Player(unsigned int screen_width, unsigned int screen_height, glm::vec3 color)
-    : pad(std::make_unique<Pad>(screen_width, screen_height, [this](unsigned int id)
-                                { this->buff_process(id); }, color)),
-      ball(std::make_unique<Ball>(color)), Object("Player")
+Player::Player(unsigned int screen_width, unsigned int screen_height, PlayerID player_id)
+    : pad(std::make_unique<Pad>(getPos(screen_width, screen_height, player_id), [this](unsigned int id)
+                                { this->buff_process(id); }, getColor(player_id))),
+      ball(std::make_unique<Ball>(getColor(player_id))), Object("Player"), player_id(player_id)
 {
     static bool is_init_range = false;
     if (!is_init_range)
@@ -50,7 +50,10 @@ void Player::update(float dt)
     {
         pass_through_t -= dt;
         if (pass_through_t <= 0.0f)
+        {
             ball->setThrough(false);
+            ball->resetColor();
+        }
     }
     if (chaos_t > 0.0f)
     {
@@ -74,49 +77,99 @@ void Player::update(float dt)
 
 void Player::processInput(int key, int action)
 {
-    if (action == GLFW_PRESS)
+    if (player_id == PlayerID::Player1 || player_id == PlayerID::Player_Single)
     {
-        switch (key)
+        if (action == GLFW_PRESS)
         {
-        case GLFW_KEY_A:
-            pad->processInput(Pad::Key::LEFT, true);
-            break;
-        case GLFW_KEY_D:
-            pad->processInput(Pad::Key::RIGHT, true);
-            break;
-        case GLFW_KEY_W:
-            pad->processInput(Pad::Key::UP, true);
-            break;
-        case GLFW_KEY_S:
-            pad->processInput(Pad::Key::DOWN, true);
-            break;
-        default:
-            break;
+            switch (key)
+            {
+            case GLFW_KEY_A:
+                pad->processInput(Pad::Key::LEFT, true);
+                break;
+            case GLFW_KEY_D:
+                pad->processInput(Pad::Key::RIGHT, true);
+                break;
+            case GLFW_KEY_W:
+                pad->processInput(Pad::Key::UP, true);
+                break;
+            case GLFW_KEY_S:
+                pad->processInput(Pad::Key::DOWN, true);
+                break;
+            default:
+                break;
+            }
+            if (key == GLFW_KEY_SPACE)
+                ball->processInput(key, true);
         }
-        if (key == GLFW_KEY_SPACE)
-            ball->processInput(key, true);
+        else if (action == GLFW_RELEASE)
+        {
+            switch (key)
+            {
+            case GLFW_KEY_A:
+                pad->processInput(Pad::Key::LEFT, false);
+                break;
+            case GLFW_KEY_D:
+                pad->processInput(Pad::Key::RIGHT, false);
+                break;
+            case GLFW_KEY_W:
+                pad->processInput(Pad::Key::UP, false);
+                break;
+            case GLFW_KEY_S:
+                pad->processInput(Pad::Key::DOWN, false);
+                break;
+            default:
+                break;
+            }
+            if (key == GLFW_KEY_SPACE)
+                ball->processInput(key, false);
+        }
     }
-    else if (action == GLFW_RELEASE)
+    else if (player_id == PlayerID::Player2)
     {
-        switch (key)
+        if (action == GLFW_PRESS)
         {
-        case GLFW_KEY_A:
-            pad->processInput(Pad::Key::LEFT, false);
-            break;
-        case GLFW_KEY_D:
-            pad->processInput(Pad::Key::RIGHT, false);
-            break;
-        case GLFW_KEY_W:
-            pad->processInput(Pad::Key::UP, false);
-            break;
-        case GLFW_KEY_S:
-            pad->processInput(Pad::Key::DOWN, false);
-            break;
-        default:
-            break;
+            switch (key)
+            {
+            case GLFW_KEY_LEFT:
+                pad->processInput(Pad::Key::LEFT, true);
+                break;
+            case GLFW_KEY_RIGHT:
+                pad->processInput(Pad::Key::RIGHT, true);
+                break;
+            case GLFW_KEY_UP:
+                pad->processInput(Pad::Key::UP, true);
+                break;
+            case GLFW_KEY_DOWN:
+                pad->processInput(Pad::Key::DOWN, true);
+                break;
+            default:
+                break;
+            }
+            if (key == GLFW_KEY_RIGHT_ALT)
+                ball->processInput(key, true);
         }
-        if (key == GLFW_KEY_SPACE)
-            ball->processInput(key, false);
+        else if (action == GLFW_RELEASE)
+        {
+            switch (key)
+            {
+            case GLFW_KEY_LEFT:
+                pad->processInput(Pad::Key::LEFT, false);
+                break;
+            case GLFW_KEY_RIGHT:
+                pad->processInput(Pad::Key::RIGHT, false);
+                break;
+            case GLFW_KEY_UP:
+                pad->processInput(Pad::Key::UP, false);
+                break;
+            case GLFW_KEY_DOWN:
+                pad->processInput(Pad::Key::DOWN, false);
+                break;
+            default:
+                break;
+            }
+            if (key == GLFW_KEY_RIGHT_ALT)
+                ball->processInput(key, false);
+        }
     }
 }
 
@@ -133,7 +186,7 @@ void Player::buff_process(unsigned int id)
         break;
     case BuffManager::BuffType::PASS_THROUGH:
         ball->setThrough(true);
-        ball->setColor(glm::vec3(0.3f, 0.6f, 0.3f));
+        ball->setColor(glm::vec3(1.0f, 0.6f, 0.3f));
         pass_through_t = static_cast<float>(BuffManager::BuffTime::PASS_THROUGH);
         break;
     case BuffManager::BuffType::PAD_SIZE_INCREASE:
@@ -150,9 +203,10 @@ void Player::buff_process(unsigned int id)
     case BuffManager::BuffType::CLEAN:
         pad->setChaos(false);
         pad->setIcy(false);
-        ball->setThrough(false);
         pad->speedup(true);
         pad->sizeIncrease(true);
+        ball->setThrough(false);
+        ball->resetColor();
         ball->setStealth(false);
         break;
     case BuffManager::BuffType::STEALTH:
@@ -161,5 +215,41 @@ void Player::buff_process(unsigned int id)
         break;
     default:
         break;
+    }
+}
+
+glm::vec3 Player::getColor(PlayerID player_id)
+{
+    switch (player_id)
+    {
+    case PlayerID::Player_Single:
+        return glm::vec3(1.0f);
+        break;
+    case PlayerID::Player1:
+        return glm::vec3(0.5f, 0.5f, 1.0f);
+        break;
+    case PlayerID::Player2:
+        return glm::vec3(1.0f, 1.0f, 0.0f);
+        break;
+    default:
+        return glm::vec3(1.0f);
+    }
+}
+
+glm::vec2 Player::getPos(unsigned int screen_width, unsigned int screen_height, PlayerID player_id)
+{
+    switch (player_id)
+    {
+    case PlayerID::Player_Single:
+        return glm::vec2(screen_width / 2.0f, screen_height);
+        break;
+    case PlayerID::Player1:
+        return glm::vec2(screen_width / 4.0f, screen_height);
+        break;
+    case PlayerID::Player2:
+        return glm::vec2(screen_width / 4.0f * 3.0f, screen_height);
+        break;
+    default:
+        return glm::vec2(screen_width / 2.0f, screen_height);
     }
 }

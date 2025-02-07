@@ -5,7 +5,7 @@
 static const glm::vec2 init_ball_velocity(200.0f, -450.0f);
 
 Ball::Ball(glm::vec3 color, float radius)
-    : radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball")
+    : radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball"), init_color(color)
 {
     velocity = init_ball_velocity;
     ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, this->color, false));

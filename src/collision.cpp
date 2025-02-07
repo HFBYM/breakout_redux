@@ -63,7 +63,7 @@ static std::pair<glm::vec2, glm::vec2> check_collision(const glm::vec2 &pos_one,
 /// @brief access collision data and process
 void Collision::collision(float dt)
 {
-	std::vector<unsigned int> buffs_with_pad;
+	std::map<unsigned int, bool> buffs_with_pad;
 	for (auto &[_, pad] : data["Pad"])
 	{
 		for (auto &[__, pad_range] : data["Pad_Range"])
@@ -78,37 +78,38 @@ void Collision::collision(float dt)
 			if (temp.first != glm::vec2(0, 0))
 				pad->func("Range", temp.first, temp.second);
 		}
-		for(auto&[id, buff]:data["Buff"])
+		for (auto &[id, buff] : data["Buff"])
 		{
 			auto temp = check_collision(pad->pos, pad->size, pad->velocity, buff->pos, buff->size, buff->velocity, dt);
 			if (temp.first != glm::vec2(0, 0))
 			{
-				buffs_with_pad.push_back(id);
+				buffs_with_pad[id] = true;
+
 				// using the function to pass the id
 				pad->func("Buff", glm::vec2(static_cast<float>(id), 0.0f), glm::vec2(0.0f));
 			}
 		}
 	}
 
-	for (auto &buff: buffs_with_pad)
+	for (auto &[buff, _] : buffs_with_pad)
 		data["Buff"][buff]->func("buff_with_pad", glm::vec2(0.0), glm::vec2(0.0));
 
-	std::vector<unsigned int> buffs_with_range;
+	std::map<unsigned int, bool> buffs_with_range;
 	for (auto &[id, buff] : data["Buff"])
 	{
 		for (auto &[__, buff_range] : data["Buff_Range"])
 		{
 			auto temp = check_collision(buff->pos, buff->size, buff->velocity, buff_range->pos, buff_range->size, buff_range->velocity, dt);
 			if (temp.first != glm::vec2(0, 0))
-				buffs_with_range.push_back(id);
+				buffs_with_range[id] = true;
 		}
 	}
 
-	for (auto &buff: buffs_with_range)
+	for (auto &[buff, _] : buffs_with_range)
 		data["Buff"][buff]->func("buff_with_range", glm::vec2(0.0), glm::vec2(0.0));
 
 	// bricks would change the log data so it should be out of the loop
-	std::vector<unsigned int> bricks;
+	std::map<unsigned int, bool> bricks;
 	for (auto &[_, ball] : data["Ball"])
 	{
 		for (auto &[__, ball_range] : data["Range"])
@@ -129,11 +130,11 @@ void Collision::collision(float dt)
 			if (temp.first != glm::vec2(0, 0))
 			{
 				ball->func("Brick", temp.first, temp.second);
-				bricks.push_back(id);
+				bricks[id] = true;
 			}
 		}
 	}
 
-	for (auto &brick : bricks)
+	for (auto &[brick, _] : bricks)
 		data["Brick"][brick]->func("Ball", glm::vec2(0.0), glm::vec2(0.0));
 }

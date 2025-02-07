@@ -27,5 +27,6 @@ private:
 
 	std::unique_ptr<Level> level;
 	std::unique_ptr<RenderObj> background;
-	std::unique_ptr<Player> player;
+	std::unique_ptr<Player> player_1;
+	std::unique_ptr<Player> player_2;
 };

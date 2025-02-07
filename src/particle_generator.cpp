@@ -84,6 +84,7 @@ void Particle::set(const glm::vec2 &master_pos, const glm::vec2 &master_velocity
 
     // standardlize endurence
     this->endurance = (range * sqrt(2.0f) - glm::length(pos)) / range * sqrt(2.0f);
+    
     this->pos = master_pos + pos - glm::vec2(particle_size / 2.0f) + master_size / 2.0f;
     this->velocity = pos + master_velocity * 0.1f;
     this->color = glm::vec4(endurance * glm::vec3(10.0f) * glm::vec3(master_color), endurance);
