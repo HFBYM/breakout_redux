@@ -13,7 +13,7 @@ I am not a professional game developer, nor a professional C++ programmer. This 
 
 ## TODO 功能实现
 
-文本UI 记录保存 得分处理 分utils
+记录保存 得分处理 分utils
 
 ## Dependencies
 

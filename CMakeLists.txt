@@ -33,6 +33,7 @@ link_libraries(opengl32.lib)
 link_libraries(glfw3.lib)
 link_libraries(irrKlang.lib)
 link_libraries(freetyped.lib)
+link_libraries(imm32.lib)
 
 # find the src files
 file(GLOB MAIN_SRC_CPP ${CMAKE_SOURCE_DIR}/src/*.cpp)

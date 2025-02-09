@@ -9,7 +9,9 @@ public:
         SOLID,
         BLEEPMP3,
         BLEEPWAV,
-        POWERUP
+        POWERUP,
+        IKUN,
+        JI
     };
     static SoundEngine &instance()
     {

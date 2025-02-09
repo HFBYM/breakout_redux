@@ -25,7 +25,11 @@ public:
 
 	char &operator[](unsigned int index);
 
+	void append(const char c);
+	void append(const mString &other);
+
 	inline unsigned int getSize() const { return size; }
+	inline unsigned int length() const { return size; }
 	const char *getStr() const;
 
 private:

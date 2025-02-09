@@ -27,6 +27,12 @@ void SoundEngine::play_music(Song song)
     case Song::POWERUP:
         sound_engine->play2D(PROJECT_DIR "/assets/music/powerup.wav", false);
         break;
+    case Song::IKUN:
+        sound_engine->play2D(PROJECT_DIR "/assets/music/niganma.mp3", false);
+        break;
+    case Song::JI:
+        sound_engine->play2D(PROJECT_DIR "/assets/music/zhiyin.mp3", false);
+        break;
     default:
         MDEBUG();
         break;

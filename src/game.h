@@ -1,8 +1,11 @@
 #pragma once
 #include <memory>
+#include<vector>
 class Level;
 class RenderObj;
 class Player;
+class Menu;
+struct GLFWwindow;
 /// @brief This is a singleton rather than a static one cause some functions can't be called anywhere
 class Game
 {
@@ -25,8 +28,12 @@ private:
 	Game(const Game &) = delete;
 	Game &operator=(const Game &) = delete;
 
-	std::unique_ptr<Level> level;
-	std::unique_ptr<RenderObj> background;
-	std::unique_ptr<Player> player_1;
-	std::unique_ptr<Player> player_2;
+	GLFWwindow *window = nullptr;
+
+	std::unique_ptr<Level> level = nullptr;
+	std::unique_ptr<RenderObj> background = nullptr;
+	std::unique_ptr<Menu> menu = nullptr;
+	std::vector<std::unique_ptr<Player>> players;
+
+	void onGame(int start_menu_choice, int level_choice);
 };

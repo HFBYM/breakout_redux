@@ -1,5 +1,5 @@
 #include "mString.h"
-#include"debug.h"
+#include "debug.h"
 #include <iostream>
 mString::mString(const char *str)
 {
@@ -104,6 +104,37 @@ char &mString::operator[](unsigned int index)
 		MDEBUG();
 	}
 	return ptr[index];
+}
+
+void mString::append(const char c)
+{
+	if (c != NULL)
+	{
+		unsigned int new_size = size + 1;
+		std::unique_ptr<char[]> new_ptr = std::make_unique<char[]>(new_size + 1);
+		for(unsigned int i = 0; i < size; i++)
+			new_ptr[i] = ptr[i];
+		new_ptr[new_size - 1] = c;
+		new_ptr[new_size] = NULL;
+		ptr = std::move(new_ptr);
+		size = new_size;
+	}
+}
+
+void mString::append(const mString &other)
+{
+	if (other.ptr)
+	{
+		unsigned int new_size = size + other.size;
+		std::unique_ptr<char[]> new_ptr = std::make_unique<char[]>(new_size + 1);
+		for (unsigned int i = 0; i < size; i++)
+			new_ptr[i] = ptr[i];
+		for (unsigned int i = 0; i < other.size; i++)
+			new_ptr[size + i] = other.ptr[i];
+		new_ptr[new_size] = NULL;
+		ptr = std::move(new_ptr);
+		size = new_size;
+	}
 }
 
 const char *mString::getStr() const
