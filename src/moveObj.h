@@ -8,13 +8,13 @@ protected:
     glm::vec2 velocity = glm::vec2(0.0f);
     glm::vec3 accelerate = glm::vec3(0.0f);
 
-    virtual void do_collision(const mString& message, const glm::vec2& reflect, const glm::vec2& offset) {};
+    virtual void do_collision(const std::string& message, const glm::vec2& reflect, const glm::vec2& offset) {};
 public:
     /// @brief this constructor is used to create its derived class
     MoveObj(glm::vec2 v = glm::vec2(0.0f)) : velocity(v),  Object("MoveObj") {}
 
     /// @brief this constructor is used to create  independent MoveObj
-    MoveObj(const mString &id_name, const glm::vec2 &pos, const glm::vec2 &size) : Object(pos, size, id_name) {}
+    MoveObj(const std::string &id_name, const glm::vec2 &pos, const glm::vec2 &size) : Object(pos, size, id_name) {}
     ~MoveObj();
 
     void log_move();

@@ -5,7 +5,7 @@
 struct CollisionData
 {
 public:
-    using FuncType = std::function<void(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)>;
+    using FuncType = std::function<void(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)>;
 
     glm::vec2 &pos;
     glm::vec2 &size;

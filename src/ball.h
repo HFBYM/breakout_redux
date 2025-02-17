@@ -1,6 +1,7 @@
 #pragma once
 #include "renderObj.h"
 #include "moveObj.h"
+#include<string>
 class Ball : public RenderObj, public MoveObj
 {
 private:
@@ -9,7 +10,7 @@ private:
     bool isThrough = false;
     glm::vec3 init_color;
 
-    void do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
+    void do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
 
 public:
     /// @brief the ball need the pad position and size to set the ball position any time

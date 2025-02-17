@@ -2,13 +2,13 @@
 #include "Resource_manager.h"
 #include <iostream>
 
-static void load(const mString &path, std::vector<std::vector<unsigned int>> &tileData)
+static void load(const std::string &path, std::vector<std::vector<unsigned int>> &tileData)
 {
-	mString file = ResourceManager::readFile(path);
+	std::string file = ResourceManager::readFile(path);
 
 	std::vector<unsigned int> row;
 	char c = NULL;
-	for (unsigned int i = 0; i < file.getSize(); i++)
+	for (unsigned int i = 0; i < file.size(); i++)
 	{
 		c = file[i];
 		if (isspace(c))
@@ -26,7 +26,7 @@ static void load(const mString &path, std::vector<std::vector<unsigned int>> &ti
 		throw std::runtime_error("ERROR::LEVEL: loading file ");
 }
 
-Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsigned int levelHeight)
+Level::Level(unsigned int id, const std::string &path, unsigned int levelWidth, unsigned int levelHeight)
 {
 	std::vector<std::vector<unsigned int>> tileData;
 	try
@@ -36,7 +36,7 @@ Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsi
 	catch (std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
-		std::cerr << path.getStr() << " has wrong data" << std::endl;
+		std::cerr << path << " has wrong data" << std::endl;
 	}
 	// get the number of lives in the last line
 	this->lives = tileData[tileData.size() - 1][0];
@@ -89,7 +89,7 @@ Level::Level(unsigned int id, const mString &path, unsigned int levelWidth, unsi
 				catch (std::exception &e)
 				{
 					std::cerr << e.what() << std::endl;
-					std::cerr << "unnamed type of brick in " << path.getStr() << std::endl;
+					std::cerr << "unnamed type of brick in " << path << std::endl;
 					color = glm::vec4(1.0f);
 				}
 				this->bricks.push_back(std::make_unique<Brick>(pos, size, "block", static_cast<Brick::BrickType>(tileData[y][x]), false, color));

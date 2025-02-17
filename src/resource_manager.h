@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
 #include <memory>
-class mString;
 #include"texture.h"
 #include"shader.h"
+#include<string>
 
 /// @brief manager the shaders and textures and is a static class
 class ResourceManager
@@ -15,22 +15,22 @@ private:
 		textures.clear();
 		shaders.clear();
 	}
-	std::map<mString, std::unique_ptr<Texture2D>> textures;
-	std::map<mString, std::unique_ptr<Shader>> shaders;
+	std::map<std::string, std::unique_ptr<Texture2D>> textures;
+	std::map<std::string, std::unique_ptr<Shader>> shaders;
 
 	/// @brief load texture2D from file
 	/// @param file filepath
 	/// @param has_alpha decides whether or not this texture has alpha channel
 	/// @param name the texture name
-	void loadTexture(const mString &file, bool has_alpha, const mString &name);
+	void loadTexture(const std::string &file, bool has_alpha, const std::string &name);
 
-	void loadShader(const mString &file, const mString &name);
+	void loadShader(const std::string &file, const std::string &name);
 
 public:
-	static mString readFile(const mString &file);
+	static std::string readFile(const std::string &file);
 
-	const Shader &getShader(const mString &name);
-	const Texture2D &getTexture(const mString &name);
+	const Shader &getShader(const std::string &name);
+	const Texture2D &getTexture(const std::string &name);
 
 	static ResourceManager &instance()
 	{

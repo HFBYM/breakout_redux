@@ -3,7 +3,6 @@
 #include "soundEngine.h"
 #include <iostream>
 
-//TODO 更好的等概率生成
 void BuffManager::createBuff(const glm::vec2 &master_pos, const glm::vec2 &size)
 {
     float chance = Random::instance().randomFloat(100.0f);
@@ -67,7 +66,7 @@ void BuffManager::Buff::detach_all()
     detach_collision();
 }
 
-mString BuffManager::Buff::getTex(BuffType type)
+std::string BuffManager::Buff::getTex(BuffType type)
 {
     switch (type)
     {
@@ -134,7 +133,7 @@ glm::vec3 BuffManager::Buff::getColor(BuffType type)
         break;
     }
 }
-void BuffManager::Buff::do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
+void BuffManager::Buff::do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
     detach_all();
     if (message != "buff_with_range")

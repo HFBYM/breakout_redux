@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include "mString.h"
+#include <string>
 #include <memory>
 /// @brief manages the data from objects
 template <typename T>
@@ -14,14 +14,14 @@ protected:
         data.clear();
     }
     // just using the ptr
-    std::map<mString, std::map<unsigned int, std::unique_ptr<T>>> data;
+    std::map<std::string, std::map<unsigned int, std::unique_ptr<T>>> data;
 
 public:
-    inline void log(const mString &type, unsigned int id, std::unique_ptr<T> value)
+    inline void log(const std::string &type, unsigned int id, std::unique_ptr<T> value)
     {
         data[type][id] = std::move(value);
     }
-    inline void detach(const mString &type, unsigned int id)
+    inline void detach(const std::string &type, unsigned int id)
     {
         if (data.empty())
             return;

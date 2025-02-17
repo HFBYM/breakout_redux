@@ -1,5 +1,5 @@
 #pragma once
-#include"mString.h"
+#include<string>
 class Texture2D
 {
 private:
@@ -18,12 +18,12 @@ private:
 	/// @brief how to stretch when scaling
 	unsigned int filter_min = 0, filter_max = 0;
 
-	mString name;
+	std::string name;
 	
 	/// @brief it doesn't decide which slot to bind
 	void generate(unsigned int width, unsigned int height, unsigned char* data);
 public:
-	Texture2D(const mString& name, unsigned int inFormat, unsigned int imaFormat, unsigned int width, unsigned int height, unsigned char* data);
+	Texture2D(const std::string& name, unsigned int inFormat, unsigned int imaFormat, unsigned int width, unsigned int height, unsigned char* data);
 
 	Texture2D(const Texture2D&) = delete;
 

@@ -44,6 +44,12 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "ctime": "cpp",
+        "forward_list": "cpp",
+        "any": "cpp",
+        "string_view": "cpp",
+        "iomanip": "cpp",
+        "valarray": "cpp"
     }
 }

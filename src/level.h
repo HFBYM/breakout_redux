@@ -6,7 +6,7 @@ class Level
 {
 public:
 	/// @param path text file with level data
-	Level(unsigned int id, const mString& path, unsigned int levelWidth, unsigned int levelHeight);
+	Level(unsigned int id, const std::string& path, unsigned int levelWidth, unsigned int levelHeight);
 	~Level() = default;
 	
 	void log_renderer();
@@ -20,7 +20,6 @@ public:
 
 	//bool isCompleted();	//检测关卡是否完成 即所有可被破坏的都破坏完
 private:
-	//TODO动态加载关卡
 	std::vector<std::unique_ptr<Brick>> bricks;
 
 	// lives for each level

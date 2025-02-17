@@ -51,5 +51,5 @@ private:
 		static glm::vec2 init_size(100.0, 20.0);
 		return init_size;
 	}
-	void do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
+	void do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
 };

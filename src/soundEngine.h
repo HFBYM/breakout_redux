@@ -1,6 +1,5 @@
 #pragma once
 #include <include/irrKlang.h>
-//TODO 动态库问题
 class SoundEngine
 {
 public:

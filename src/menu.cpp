@@ -92,7 +92,7 @@ void Menu::run()
     }
 }
 
-void Menu::draw(const std::vector<mString> &items, const mString &title)
+void Menu::draw(const std::vector<std::string> &items, const std::string &title)
 {
     auto console = getConsoleSize();
     static auto calculateX = [&](unsigned int length) -> int
@@ -110,7 +110,7 @@ void Menu::draw(const std::vector<mString> &items, const mString &title)
         int titleX = calculateX(title.length());
         setCursorPos(titleX, 2);
         setColor(Menu::ConsoleColor::HIGHLIGHT);
-        std::cout << "[ " << title.getStr() << " ]";
+        std::cout << "[ " << title << " ]";
 
         for (unsigned int i = 0; i < items.size(); ++i)
         {
@@ -120,12 +120,12 @@ void Menu::draw(const std::vector<mString> &items, const mString &title)
             if (i == selectedIndex)
             {
                 setColor(Menu::ConsoleColor::HIGHLIGHT);
-                std::cout << "> " << items[i].getStr() << " <";
+                std::cout << "> " << items[i] << " <";
                 setColor(Menu::ConsoleColor::DEFAULT);
             }
             else
             {
-                std::cout << "  " << items[i].getStr() << "  ";
+                std::cout << "  " << items[i] << "  ";
             }
         }
     }
@@ -134,13 +134,13 @@ void Menu::draw(const std::vector<mString> &items, const mString &title)
         // clear the previous line
         int xPos = calculateX(items[preIndex].length());
         setCursorPos(xPos, startY + preIndex);
-        std::cout << "  " << items[preIndex].getStr() << "  ";
+        std::cout << "  " << items[preIndex] << "  ";
 
         // draw the new line
         xPos = calculateX(items[selectedIndex].length());
         setCursorPos(xPos, startY + selectedIndex);
         setColor(Menu::ConsoleColor::HIGHLIGHT);
-        std::cout << "> " << items[selectedIndex].getStr() << " <";
+        std::cout << "> " << items[selectedIndex] << " <";
         setColor(Menu::ConsoleColor::DEFAULT);
     }
     preIndex = selectedIndex;

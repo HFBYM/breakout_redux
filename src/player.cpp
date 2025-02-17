@@ -173,7 +173,6 @@ void Player::processInput(int key, int action)
     }
 }
 
-// TODO BUFF美术效果
 void Player::buff_process(unsigned int id)
 {
     switch (BuffManager::instance().getTypebyId(id))

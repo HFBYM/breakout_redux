@@ -53,7 +53,7 @@ void ParticleData::update(float dt)
 
 void ParticleGenerator::update(float dt)
 {
-    mString used_type = NULL;
+    std::string used_type;
     unsigned int used_id = 0;
     for (auto &[type, id_data] : data)
         for (auto &[id, particle_data] : id_data)
@@ -66,7 +66,7 @@ void ParticleGenerator::update(float dt)
             }
         }
     // detach the particles that are out of endurance
-    if(used_type != NULL)
+    if(used_type.empty() == false)
         detach(used_type, used_id);
 }
 ParticleGenerator::~ParticleGenerator()

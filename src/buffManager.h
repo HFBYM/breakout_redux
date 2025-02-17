@@ -2,6 +2,7 @@
 #include "renderObj.h"
 #include "moveObj.h"
 #include <vector>
+#include<memory>
 class BuffManager
 {
 public:
@@ -42,10 +43,10 @@ public:
     private:
         BuffType type = BuffType::NONE;
 
-        static mString getTex(BuffType type);
+        static std::string getTex(BuffType type);
         static glm::vec3 getColor(BuffType type);
         
-        void do_collision(const mString& message, const glm::vec2& reflect, const glm::vec2& offset) override;
+        void do_collision(const std::string& message, const glm::vec2& reflect, const glm::vec2& offset) override;
     };
 
     static BuffManager &instance()

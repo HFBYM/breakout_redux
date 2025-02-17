@@ -133,8 +133,8 @@ void Game::onGame(int start_menu_choice, int level_choice)
 	for (auto &player : players)
 		player->log_all();
 
-	mString level_path(PROJECT_DIR "/assets/levels/level_");
-	level_path.append((char)(level_choice + 1 + 48));
+	std::string level_path(PROJECT_DIR "/assets/levels/level_");
+	level_path += ((char)(level_choice + 1 + 48));
 	level_path.append(".lvl");
 
 	level = std::make_unique<Level>(0, level_path, init_screen_width, init_screen_height / 2);

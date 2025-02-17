@@ -1,7 +1,7 @@
 #include "texture.h"
 #include <glad.h>
 
-Texture2D::Texture2D(const mString &name, unsigned int inFormat, unsigned int imaFormat, unsigned int width, unsigned int height, unsigned char *data)
+Texture2D::Texture2D(const std::string &name, unsigned int inFormat, unsigned int imaFormat, unsigned int width, unsigned int height, unsigned char *data)
 	: internal_format(inFormat), image_format(imaFormat), wrap_t(GL_REPEAT), wrap_s(GL_REPEAT),
 	  filter_max(GL_LINEAR), filter_min(GL_LINEAR), name(name)
 {

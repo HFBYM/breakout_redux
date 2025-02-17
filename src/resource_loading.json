@@ -1,0 +1,77 @@
+{
+    "author": "HFBYM",
+    "resources": {
+        "shaders": [
+            {
+                "name": "postProcess",
+                "path": "assets/shaders/postProcess.shader"
+            },
+            {
+                "name": "sprite",
+                "path": "assets/shaders/sprite.shader"
+            }
+        ],
+        "textures": [
+            {
+                "name":"background",
+                "path":"assets/textures/background.jpg",
+                "has_alpha":false
+            },
+            {
+                "name":"block",
+                "path":"assets/textures/block.png",
+                "has_alpha":false
+            },
+            {
+                "name":"block_solid",
+                "path":"assets/textures/block_solid.png",
+                "has_alpha":false
+            },
+            {
+                "name":"basketball",
+                "path":"assets/textures/basketball.png",
+                "has_alpha":true
+            },
+            {
+                "name":"paddle",
+                "path":"assets/textures/paddle.png",
+                "has_alpha":true
+            },
+            {
+                "name":"particle",
+                "path":"assets/textures/particle.png",
+                "has_alpha":true
+            },
+            {
+                "name":"tex_chaos",
+                "path":"assets/textures/powerup_chaos.png",
+                "has_alpha":false
+            },
+            {
+                "name":"tex_confuse",
+                "path":"assets/textures/powerup_confuse.png",
+                "has_alpha":false
+            },
+            {
+                "name":"tex_size",
+                "path":"assets/textures/powerup_increase.png",
+                "has_alpha":false
+            },
+            {
+                "name":"tex_pass",
+                "path":"assets/textures/powerup_passthrough.png",
+                "has_alpha":false
+            },
+            {
+                "name":"tex_speed",
+                "path":"assets/textures/powerup_speed.png",
+                "has_alpha":false
+            },
+            {
+                "name":"tex_sticky",
+                "path":"assets/textures/powerup_sticky.png",
+                "has_alpha":false
+            }
+        ]
+    }
+}

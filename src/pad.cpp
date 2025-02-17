@@ -90,7 +90,7 @@ void Pad::speedup(bool reset)
 		ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, this->color, true));
 	}
 }
-void Pad::do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
+void Pad::do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
 	pos += offset;
 	if (message == "Buff")

@@ -16,10 +16,10 @@ public:
         return distribution(generator);
     }
     
-    /// @brief Generates a random unsigned int between 1 and range
+    /// @brief Generates a random unsigned int between 0 and range
     unsigned int randomInt(unsigned int range)
     {
-        std::uniform_int_distribution<unsigned int> distribution(1, range);
+        std::uniform_int_distribution<unsigned int> distribution(0, range);
         return distribution(generator);
     }
 

@@ -2,6 +2,7 @@
 #include"pad.h"
 #include"ball.h"
 #include"keyboardObj.h"
+#include<memory>
 class Player: public KeyboardObj
 {
 public:

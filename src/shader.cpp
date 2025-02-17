@@ -5,15 +5,16 @@
 #include <gtc\type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <iostream>
+#include<tuple>
 #include"debug.h"
 
-Shader::Shader(const mString &name, const mString &vertexSource, const mString &fragmentSouce)
+Shader::Shader(const std::string &name, const std::string &vertexSource, const std::string &fragmentSouce)
     : m_name(name)
 {
     // compile the vertex and fragment shader
     GLuint sVertex, sFragment;
-    const char *temp_v = vertexSource.getStr();
-    const char *temp_f = fragmentSouce.getStr();
+    const char *temp_v = vertexSource.c_str();
+    const char *temp_f = fragmentSouce.c_str();
     try
     {
         sVertex = glCreateShader(GL_VERTEX_SHADER);
@@ -33,11 +34,11 @@ Shader::Shader(const mString &name, const mString &vertexSource, const mString &
         glLinkProgram(this->id);
         this->checkCompileErrors(this->id, "PROGRAM");
     }
-    catch (std::tuple<mString, mString, mString> &e)
+    catch (std::tuple<std::string, std::string, std::string> &e)
     {
-        std::cerr << std::get<0>(e).getStr() << std::endl;
-        std::cerr << "name: " << m_name.getStr() << "type: " << std::get<2>(e).getStr() << std::endl;
-        std::cerr << std::get<1>(e).getStr() << std::endl;
+        std::cerr << std::get<0>(e) << std::endl;
+        std::cerr << "name: " << m_name << "type: " << std::get<2>(e) << std::endl;
+        std::cerr << std::get<1>(e) << std::endl;
         MDEBUG();
     }
     // program is created so these is out of use
@@ -56,7 +57,7 @@ const Shader &Shader::use() const
     glUseProgram(this->id);
     return *this;
 }
-void Shader::checkCompileErrors(unsigned int object, const mString &type) const
+void Shader::checkCompileErrors(unsigned int object, const std::string &type) const
 {
     GLint success;
     GLchar infoLog[1024];
@@ -66,7 +67,7 @@ void Shader::checkCompileErrors(unsigned int object, const mString &type) const
         if (!success)
         {
             glGetShaderInfoLog(object, 1024, NULL, infoLog);
-            throw std::tuple<mString, mString, mString>("ERROR::SHADER: compile_time error", infoLog, type);
+            throw std::tuple<std::string, std::string, std::string>("ERROR::SHADER: compile_time error", infoLog, type);
         }
     }
     else
@@ -75,15 +76,15 @@ void Shader::checkCompileErrors(unsigned int object, const mString &type) const
         if (!success)
         {
             glGetProgramInfoLog(object, 1024, NULL, infoLog);
-            throw std::tuple<mString, mString, mString>("ERROR::PROGRAM: link_time error", infoLog, type);
+            throw std::tuple<std::string, std::string, std::string>("ERROR::PROGRAM: link_time error", infoLog, type);
         }
     }
 }
 
 template <typename T>
-void Shader::setUniform(const mString &name, const T &value) const
+void Shader::setUniform(const std::string &name, const T &value) const
 {
-    int pos = glGetUniformLocation(this->id, name.getStr());
+    int pos = glGetUniformLocation(this->id, name.c_str());
     try
     {
         if (pos == -1)
@@ -92,8 +93,8 @@ void Shader::setUniform(const mString &name, const T &value) const
     catch (std::runtime_error &e)
     {
         std::cerr << e.what() << std::endl;
-        std::cerr << "uniform name: " << name.getStr() << std::endl;
-        std::cerr << "shader name: " << m_name.getStr() << std::endl;
+        std::cerr << "uniform name: " << name << std::endl;
+        std::cerr << "shader name: " << m_name << std::endl;
         this->use();
         return;
     }
@@ -136,8 +137,8 @@ void Shader::setUniform(const mString &name, const T &value) const
         catch (std::runtime_error &e)
         {
             std::cerr << e.what() << std::endl;
-            std::cerr << "uniform name: " << name.getStr() << std::endl;
-            std::cerr << "shader name: " << m_name.getStr() << std::endl;
+            std::cerr << "uniform name: " << name << std::endl;
+            std::cerr << "shader name: " << m_name << std::endl;
             this->use();
             return;
         }
@@ -145,9 +146,9 @@ void Shader::setUniform(const mString &name, const T &value) const
 }
 
 /// @brief need to instance the template
-template void Shader::setUniform<int>(const mString &name, const int &value) const;
-template void Shader::setUniform<float>(const mString &name, const float &value) const;
-template void Shader::setUniform<glm::vec2>(const mString &name, const glm::vec2 &value) const;
-template void Shader::setUniform<glm::vec3>(const mString &name, const glm::vec3 &value) const;
-template void Shader::setUniform<glm::vec4>(const mString &name, const glm::vec4 &value) const;
-template void Shader::setUniform<glm::mat4>(const mString &name, const glm::mat4 &value) const;
+template void Shader::setUniform<int>(const std::string &name, const int &value) const;
+template void Shader::setUniform<float>(const std::string &name, const float &value) const;
+template void Shader::setUniform<glm::vec2>(const std::string &name, const glm::vec2 &value) const;
+template void Shader::setUniform<glm::vec3>(const std::string &name, const glm::vec3 &value) const;
+template void Shader::setUniform<glm::vec4>(const std::string &name, const glm::vec4 &value) const;
+template void Shader::setUniform<glm::mat4>(const std::string &name, const glm::mat4 &value) const;

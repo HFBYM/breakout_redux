@@ -9,20 +9,19 @@ set(CMAKE_CXX_STANDARD 17)
 # set the macro
 add_compile_definitions(PROJECT_DIR="${CMAKE_SOURCE_DIR}")
 
-# set the path of directory
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake/binary_build)  #??
-set(CMAKE_SUPPRESS_REGENERATION true) #depose the middle files      ??
+#depose the middle files
+set(CMAKE_SUPPRESS_REGENERATION true)
 
-# if generator is VS
 # set the include path
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)  #??file system
+include_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLAD)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/glm)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/irrKlang)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/KHR)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/stb_image)
+include_directories(${CMAKE_SOURCE_DIR}/dependencies/json_parser)
 
 # set the libs
 link_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)
@@ -41,4 +40,16 @@ file(GLOB MAIN_SRC_C ${CMAKE_SOURCE_DIR}/src/*.c)
 
 # the dlls need to be in the same directory of exe
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-add_executable(breakout  ${MAIN_SRC_C} ${MAIN_SRC_CPP})
+add_executable(breakout ${MAIN_SRC_C} ${MAIN_SRC_CPP})
+
+# copy the dlls
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin/Debug)
+    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin/Debug)
+else()
+    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin)
+endif()
+set(DLL_SRC_DIR ${CMAKE_SOURCE_DIR}/dependencies/irrKlang/lib/Winx64-visualStudio)
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${DLL_SRC_DIR}/ikpMP3.dll ${DLL_DES_DIR})
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${DLL_SRC_DIR}/irrKlang.dll ${DLL_DES_DIR})

@@ -1,14 +1,19 @@
 #include "ball.h"
 #include "particle_generator.h"
 #include "soundEngine.h"
-// TODO randon speed and delete
-static const glm::vec2 init_ball_velocity(200.0f, -450.0f);
+#include "random.h"
 
 Ball::Ball(glm::vec3 color, float radius)
     : radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball"), init_color(color)
 {
-    velocity = init_ball_velocity;
+#define PI_FACTOR (3.14159f / 180.0f)
+    float start_theta = 40.0f * PI_FACTOR;
+    float end_theta = 80.0f * PI_FACTOR;
+    float theta = Random::instance().randomFloat(end_theta - start_theta) + start_theta;
+    velocity.y = -glm::length(glm::vec2(200.0f, 450.0f)) * glm::sin(theta);
+    velocity.x = glm::length(glm::vec2(200.0f, 450.0f)) * glm::cos(theta) * (Random::instance().randomInt(1) ? -1 : 1);
     ParticleGenerator::instance().log(id_name, id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, this->color, false));
+#undef PI_FACTOR
 }
 
 Ball::~Ball()
@@ -28,15 +33,17 @@ void Ball::detach_all()
     detach_renderer();
 }
 
-void Ball::do_collision(const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
+void Ball::do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
-    if (!isThrough || message == "Ball_Range" || message == "Pad")
+    if (!isThrough || message == "Ball_Range")
     {
         velocity = glm::reflect(velocity, glm::normalize(reflect));
         pos += offset;
     }
     if (message == "Pad")
     {
+        velocity = glm::reflect(velocity, glm::normalize(reflect));
+        pos += offset;
         velocity.y = -abs(velocity.y);
         if (!isSticked)
             SoundEngine::instance().play_music(SoundEngine::Song::BLEEPWAV);

@@ -24,7 +24,7 @@ void MoveObj::log_collision()
 {
 	if (!is_log_collision)
 	{
-		Collision::FuncType func = [this](const mString &message, const glm::vec2 &reflect, const glm::vec2 &offset)
+		Collision::FuncType func = [this](const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 		{ this->do_collision(message, reflect, offset); };
 		Collision::instance().log(id_name, id_num, std::make_unique<Collision::Data>(pos, size, func, velocity));
 	}
