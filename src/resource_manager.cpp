@@ -8,11 +8,9 @@
 #include <memory>
 #include <iostream>
 #include "debug.h"
-#include <json.hpp>
 #ifndef PROJECT_DIR
 #define PROJECT_DIR "."
 #endif
-using json = nlohmann::json;
 void ResourceManager::loadShader(const std::string &file, const std::string &name)
 {
 	std::ifstream ifs(file);
@@ -99,16 +97,16 @@ void ResourceManager::loadTexture(const std::string &file, bool has_alpha, const
 ResourceManager::ResourceManager()
 {
 	std::ifstream file(PROJECT_DIR "/src/resource_loading.json");
-	json data = json::parse(file);
+	data = json::parse(file);
 	std::string project_dir(PROJECT_DIR "/");
 
 	// load in shaders
-	for (auto &i : data["resources"]["shaders"])
-		loadShader(project_dir + i["path"].get<std::string>(), i["name"].get<std::string>());
+	for (auto &[name, i] : data["resources"]["shaders"].get<std::map<std::string, json>>())
+		loadShader(project_dir + i["path"].get<std::string>(), name);
 
 	// load in textures
-	for (auto &i : data["resources"]["textures"])
-		loadTexture(project_dir + i["path"].get<std::string>(), i["has_alpha"].get<bool>(), i["name"].get<std::string>());
+	for (auto &[name, i] : data["resources"]["textures"].get<std::map<std::string, json>>())
+		loadTexture(project_dir + i["path"].get<std::string>(), i["has_alpha"].get<bool>(), name);
 }
 
 const Shader &ResourceManager::getShader(const std::string &name)

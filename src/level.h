@@ -18,7 +18,7 @@ public:
 
 	void Rotate();
 
-	//bool isCompleted();	//检测关卡是否完成 即所有可被破坏的都破坏完
+	bool isCompleted() const;
 private:
 	std::vector<std::unique_ptr<Brick>> bricks;
 

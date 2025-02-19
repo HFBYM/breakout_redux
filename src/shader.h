@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-// TODO 静态uniform
 class Shader
 {
 public:

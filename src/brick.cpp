@@ -21,11 +21,11 @@ void Brick::do_collision(const std::string &message, const glm::vec2 &reflect, c
 	{
 		this->detach_all();
 		ParticleGenerator::instance().log(this->id_name, this->id_num, std::make_unique<ParticleGenerator::Data>(pos, velocity, size, color, true));
-		SoundEngine::instance().play_music(SoundEngine::Song::SOLID);
+		SoundEngine::instance().play_music("SOLID");
 		BuffManager::instance().createBuff(pos, glm::vec2(size.x, size.y/2.0f));
 	}
 	else
 	{
-		SoundEngine::instance().play_music(SoundEngine::Song::BLEEPMP3);
+		SoundEngine::instance().play_music("BLEEPMP3");
 	}
 }

@@ -2,9 +2,9 @@
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
-#include"soundEngine.h"
+#include "soundEngine.h"
 
-static void setCursorPos(int x, int y)
+void Menu::setCursorPos(int x, int y)
 {
     COORD coord = {(SHORT)x, (SHORT)y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
@@ -82,11 +82,12 @@ void Menu::run()
             break;
         case MenuState::IN_GAME:
             system("cls");
-            std::cout << "loading..." << std::endl;
+            std::cout << "on game..." << std::endl;
             onGame(start_menu_choice, selectedIndex);
             state = MenuState::START_MENU;
             preIndex = -1;
             selectedIndex = 0;
+            system("pause");
             break;
         }
     }
@@ -163,7 +164,7 @@ void Menu::processInput(int item_num, std::function<void()> enter)
                 // up
                 if (key == 72)
                 {
-                    SoundEngine::instance().play_music(SoundEngine::Song::BLEEPWAV);
+                    SoundEngine::instance().play_music("BLEEPWAV");
                     selectedIndex = (selectedIndex - 1 + item_num) % item_num;
                     return;
                 }
@@ -171,7 +172,7 @@ void Menu::processInput(int item_num, std::function<void()> enter)
                 // down
                 else if (key == 80)
                 {
-                    SoundEngine::instance().play_music(SoundEngine::Song::BLEEPWAV);
+                    SoundEngine::instance().play_music("BLEEPWAV");
                     selectedIndex = (selectedIndex + 1) % item_num;
                     return;
                 }
@@ -179,7 +180,7 @@ void Menu::processInput(int item_num, std::function<void()> enter)
             // Enter键处理
             else if (key == 13)
             {
-                SoundEngine::instance().play_music(SoundEngine::Song::BLEEPMP3);
+                SoundEngine::instance().play_music("BLEEPMP3");
                 enter();
                 return;
             }

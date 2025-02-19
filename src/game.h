@@ -29,11 +29,13 @@ private:
 	Game &operator=(const Game &) = delete;
 
 	GLFWwindow *window = nullptr;
+	int monitor_width, monitor_height = 0;
 
 	std::unique_ptr<Level> level = nullptr;
 	std::unique_ptr<RenderObj> background = nullptr;
 	std::unique_ptr<Menu> menu = nullptr;
 	std::vector<std::unique_ptr<Player>> players;
+
 
 	void onGame(int start_menu_choice, int level_choice);
 };

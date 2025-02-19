@@ -75,6 +75,14 @@ Game::Game()
 	// disable the imput method editor
 	ImmDisableIME(GetCurrentThreadId());
 
+	// set the window pos
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+	if (monitor)
+		glfwGetMonitorWorkarea(monitor, NULL, NULL, &monitor_width, &monitor_height);
+	else
+		std::cerr << "ERROR::GLFW: fail to get the monitor" << std::endl;
+	glfwSetWindowPos(window, (monitor_width - init_screen_width) / 2, (monitor_height - init_screen_height) / 2);
+
 	// set the viewport size
 	glViewport(0, 0, init_screen_width, init_screen_height);
 
@@ -105,7 +113,7 @@ Game::Game()
 	background = std::make_unique<RenderObj>("Background", glm::vec2(0.0f), glm::vec2(init_screen_width, init_screen_height), "background", "sprite");
 	background->log_renderer();
 
-	SoundEngine::instance().play_music(SoundEngine::Song::BGM);
+	SoundEngine::instance().play_music("BGM");
 }
 
 void Game::run()
@@ -121,8 +129,10 @@ Game::~Game()
 void Game::onGame(int start_menu_choice, int level_choice)
 {
 	players.clear();
+	float time = 0.0f;
 	if (start_menu_choice == 0)
 	{
+		time = static_cast<float>(glfwGetTime());
 		players.push_back(std::make_unique<Player>(init_screen_width, init_screen_height, Player::PlayerID::Player_Single));
 	}
 	else if (start_menu_choice == 1)
@@ -130,6 +140,8 @@ void Game::onGame(int start_menu_choice, int level_choice)
 		players.push_back(std::make_unique<Player>(init_screen_width, init_screen_height, Player::PlayerID::Player1));
 		players.push_back(std::make_unique<Player>(init_screen_width, init_screen_height, Player::PlayerID::Player2));
 	}
+	else
+		return;
 	for (auto &player : players)
 		player->log_all();
 
@@ -157,7 +169,9 @@ void Game::onGame(int start_menu_choice, int level_choice)
 		// trigger the events such as mouse and keyboard
 		glfwPollEvents();
 
-		level->Rotate();
+		if (level->isCompleted())
+			glfwSetWindowShouldClose(window, true);
+
 		for (auto &player : players)
 			player->update(deltaTime);
 
@@ -170,5 +184,10 @@ void Game::onGame(int start_menu_choice, int level_choice)
 
 		// swap the two buffers
 		glfwSwapBuffers(window);
+	}
+	if (start_menu_choice == 0)
+	{
+		time = static_cast<float>(glfwGetTime()) - time;
+		std::cout << "time consumed: " << time << "seconds" << std::endl;
 	}
 }

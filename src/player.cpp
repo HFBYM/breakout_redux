@@ -1,6 +1,8 @@
 #include "player.h"
 #include "keyval.h"
 #include "buffManager.h"
+#include "resource_manager.h"
+#include "menu.h"
 #include <iostream>
 
 std::unique_ptr<std::unique_ptr<MoveObj>[]> Player::range(std::make_unique<std::unique_ptr<MoveObj>[]>(5));
@@ -8,7 +10,9 @@ std::unique_ptr<std::unique_ptr<MoveObj>[]> Player::range(std::make_unique<std::
 Player::Player(unsigned int screen_width, unsigned int screen_height, PlayerID player_id)
     : pad(std::make_unique<Pad>(getPos(screen_width, screen_height, player_id), [this](unsigned int id)
                                 { this->buff_process(id); }, getColor(player_id))),
-      ball(std::make_unique<Ball>(getColor(player_id))), Object("Player"), player_id(player_id)
+      ball(std::make_unique<Ball>([this](int value)
+                                  { this->add_score(value); }, getColor(player_id))),
+      Object("Player"), player_id(player_id)
 {
     static bool is_init_range = false;
     if (!is_init_range)
@@ -22,6 +26,7 @@ Player::Player(unsigned int screen_width, unsigned int screen_height, PlayerID p
             range[i]->log_collision();
     }
     is_init_range = true;
+    add_score(0);
 }
 
 Player::~Player()
@@ -175,31 +180,32 @@ void Player::processInput(int key, int action)
 
 void Player::buff_process(unsigned int id)
 {
-    switch (BuffManager::instance().getTypebyId(id))
-    {
-    case BuffManager::BuffType::SPEED:
+    std::string type = BuffManager::instance().getTypebyId(id);
+    const auto &data = ResourceManager::instance().getJsonData();
+    if (type == "SPEED")
         pad->speedup();
-        break;
-    case BuffManager::BuffType::STICKY:
+    else if (type == "STICKY")
         ball->setSticked(true);
-        break;
-    case BuffManager::BuffType::PASS_THROUGH:
+    else if (type == "PASS_THROUGH")
+    {
         ball->setThrough(true);
         ball->setColor(glm::vec3(1.0f, 0.6f, 0.3f));
-        pass_through_t = static_cast<float>(BuffManager::BuffTime::PASS_THROUGH);
-        break;
-    case BuffManager::BuffType::PAD_SIZE_INCREASE:
+        pass_through_t = data["resources"]["buff"][type]["endurence"].get<float>();
+    }
+    else if (type == "PAD_SIZE_INCREASE")
         pad->sizeIncrease();
-        break;
-    case BuffManager::BuffType::CHAOS:
+    else if (type == "CHAOS")
+    {
         pad->setChaos(true);
-        chaos_t = static_cast<float>(BuffManager::BuffTime::CHAOS);
-        break;
-    case BuffManager::BuffType::ICY:
+        chaos_t = data["resources"]["buff"][type]["endurence"].get<float>();
+    }
+    else if (type == "ICY")
+    {
         pad->setIcy(true);
-        icy_t = static_cast<float>(BuffManager::BuffTime::ICY);
-        break;
-    case BuffManager::BuffType::CLEAN:
+        icy_t = data["resources"]["buff"][type]["endurence"].get<float>();
+    }
+    else if (type == "CLEAN")
+    {
         pad->setChaos(false);
         pad->setIcy(false);
         pad->speedup(true);
@@ -207,14 +213,35 @@ void Player::buff_process(unsigned int id)
         ball->setThrough(false);
         ball->resetColor();
         ball->setStealth(false);
-        break;
-    case BuffManager::BuffType::STEALTH:
-        ball->setStealth(true);
-        stealth_t = static_cast<float>(BuffManager::BuffTime::STEALTH);
-        break;
-    default:
-        break;
     }
+    else if (type == "STEALTH")
+    {
+        ball->setStealth(true);
+        stealth_t = data["resources"]["buff"][type]["endurence"].get<float>();
+    }
+    else
+        throw "ERROR::BUFF: undefined type " + type;
+}
+
+void Player::add_score(int value)
+{
+    score += value;
+    if (player_id == PlayerID::Player1)
+    {
+        Menu::setCursorPos(0, 1);
+        std::cout << "\033[K";
+        Menu::setCursorPos(0, 1);
+        std::cout << "Player1 Score: " << score << std::endl;
+    }
+    else if (player_id == PlayerID::Player2)
+    {
+        Menu::setCursorPos(0, 2);
+        std::cout << "\033[K";
+        Menu::setCursorPos(0, 2);
+        std::cout << "Player2 Score: " << score << std::endl;
+    }
+    else
+        return;
 }
 
 glm::vec3 Player::getColor(PlayerID player_id)

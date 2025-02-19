@@ -133,6 +133,15 @@ void Collision::collision(float dt)
 				bricks[id] = true;
 			}
 		}
+		for (auto &[id, brick] : data["Brick_Solid"])
+		{
+			auto temp = check_collision(ball->pos, ball->size, ball->velocity, brick->pos, brick->size, brick->velocity, dt);
+			if (temp.first != glm::vec2(0, 0))
+			{
+				ball->func("Brick_Solid", temp.first, temp.second);
+				brick->func("Ball", temp.first, temp.second);
+			}
+		}
 	}
 
 	for (auto &[brick, _] : bricks)

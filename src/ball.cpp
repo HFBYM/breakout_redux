@@ -3,8 +3,8 @@
 #include "soundEngine.h"
 #include "random.h"
 
-Ball::Ball(glm::vec3 color, float radius)
-    : radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball"), init_color(color)
+Ball::Ball(std::function<void(int)> player_add_score, glm::vec3 color, float radius)
+    : radius(radius), RenderObj("basketball", "sprite", glm::vec4(color, 1.0f)), Object(glm::vec2(0.0f), glm::vec2(2 * radius), "Ball"), init_color(color), player_add_score(player_add_score)
 {
 #define PI_FACTOR (3.14159f / 180.0f)
     float start_theta = 40.0f * PI_FACTOR;
@@ -35,19 +35,32 @@ void Ball::detach_all()
 
 void Ball::do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset)
 {
-    if (!isThrough || message == "Ball_Range")
+    if (message == "Brick")
+    {
+        if(!isThrough)
+        {
+            velocity = glm::reflect(velocity, glm::normalize(reflect));
+            pos += offset;
+        }
+        player_add_score(1);
+    }
+    else if (message == "Brick_Solid" || message == "Ball_Range")
     {
         velocity = glm::reflect(velocity, glm::normalize(reflect));
         pos += offset;
+        if (reflect == glm::vec2(0, -1))
+            player_add_score(-2);
     }
-    if (message == "Pad")
+    else if (message == "Pad")
     {
         velocity = glm::reflect(velocity, glm::normalize(reflect));
         pos += offset;
         velocity.y = -abs(velocity.y);
         if (!isSticked)
-            SoundEngine::instance().play_music(SoundEngine::Song::BLEEPWAV);
+            SoundEngine::instance().play_music("BLEEPWAV");
     }
+    else
+        return;
 }
 
 void Ball::processInput(int key, bool press)

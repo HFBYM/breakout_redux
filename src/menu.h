@@ -19,6 +19,7 @@ public:
     Menu(std::function<void(int, int)> onGame): onGame(onGame) {}
     ~Menu() = default;
     void run();
+    static void setCursorPos(int x, int y);
 private:
     MenuState state = MenuState::START_MENU;
     int selectedIndex = 0;

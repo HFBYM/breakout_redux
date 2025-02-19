@@ -1,13 +1,16 @@
 #pragma once
 #include <map>
 #include <memory>
-#include"texture.h"
-#include"shader.h"
-#include<string>
+#include "texture.h"
+#include "shader.h"
+#include <string>
+#include <json.hpp>
 
 /// @brief manager the shaders and textures and is a static class
 class ResourceManager
 {
+public:
+	using json = nlohmann::json;
 private:
 	ResourceManager();
 	~ResourceManager()
@@ -17,6 +20,7 @@ private:
 	}
 	std::map<std::string, std::unique_ptr<Texture2D>> textures;
 	std::map<std::string, std::unique_ptr<Shader>> shaders;
+	json data;
 
 	/// @brief load texture2D from file
 	/// @param file filepath
@@ -31,6 +35,7 @@ public:
 
 	const Shader &getShader(const std::string &name);
 	const Texture2D &getTexture(const std::string &name);
+	const json& getJsonData() { return data; }
 
 	static ResourceManager &instance()
 	{

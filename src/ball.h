@@ -1,7 +1,8 @@
 #pragma once
 #include "renderObj.h"
 #include "moveObj.h"
-#include<string>
+#include <string>
+#include<functional>
 class Ball : public RenderObj, public MoveObj
 {
 private:
@@ -9,12 +10,13 @@ private:
     bool isSticked = true;
     bool isThrough = false;
     glm::vec3 init_color;
+    std::function<void(int)> player_add_score;
 
     void do_collision(const std::string &message, const glm::vec2 &reflect, const glm::vec2 &offset) override;
 
 public:
     /// @brief the ball need the pad position and size to set the ball position any time
-    Ball(glm::vec3 color = glm::vec3(1.0f), float radius = 25.0f);
+    Ball(std::function<void(int)> player_add_score, glm::vec3 color = glm::vec3(1.0f), float radius = 25.0f);
 
     ~Ball();
 

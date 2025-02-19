@@ -21,6 +21,7 @@ private:
     float chaos_t = 0.0f;
     float icy_t = 0.0f;
     float stealth_t = 0.0f;
+    int score = 0;
 
     std::unique_ptr<Pad> pad;
     std::unique_ptr<Ball> ball;
@@ -29,6 +30,7 @@ private:
 
     virtual void processInput(int key, int action) override;
     void buff_process(unsigned int id);
+    void add_score(int value);
 
     static glm::vec3 getColor(PlayerID player_id);
     static glm::vec2 getPos(unsigned int screen_width, unsigned int screen_height, PlayerID player_id);

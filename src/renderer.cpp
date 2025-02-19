@@ -97,6 +97,8 @@ void Renderer::render(unsigned int width, unsigned int height)
         draw(va, *background, width, height);
     for (const auto &[_, brick] : data["Brick"])
         draw(va, *brick, width, height);
+    for (const auto &[_, brick] : data["Brick_Solid"])
+        draw(va, *brick, width, height);
 
     // using this function to enhance the color of the particle
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);

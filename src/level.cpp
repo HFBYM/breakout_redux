@@ -141,3 +141,11 @@ void Level::Rotate()
 		i->Rotate();
 	}
 }
+
+bool Level::isCompleted() const
+{
+	for (auto &brick : bricks)
+		if (!brick->isDestroyed())
+			return false;
+	return true;
+}
