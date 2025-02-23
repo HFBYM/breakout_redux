@@ -13,7 +13,7 @@ I am not a professional game developer, nor a professional C++ programmer. This 
 
 ## TODO 功能实现
 
-分utils effective vscode
+vscode 完善readme 架构图 cmake
 
 ## Dependencies
 
@@ -22,7 +22,7 @@ Rendering: OpenGL(3.3)
 
 ## Building
 
-You nedd to add your cmake and gcc to your environment before running build.bat. Then open the breakout.exe from build/
+You need to add your cmake to your environment before running build.bat. Then open the breakout.exe from bin/
 
 ## Asset Credits
 

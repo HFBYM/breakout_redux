@@ -2,3 +2,5 @@
 /build_cmake
 /bin/Debug
 /bin/Release
+/.vscode
+/.gitignore

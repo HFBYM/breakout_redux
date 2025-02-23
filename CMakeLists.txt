@@ -35,12 +35,11 @@ link_libraries(freetyped.lib)
 link_libraries(imm32.lib)
 
 # find the src files
-file(GLOB MAIN_SRC_CPP ${CMAKE_SOURCE_DIR}/src/*.cpp)
-file(GLOB MAIN_SRC_C ${CMAKE_SOURCE_DIR}/src/*.c)
+file(GLOB_RECURSE MAIN_SRC ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/*.c)
 
 # the dlls need to be in the same directory of exe
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-add_executable(breakout ${MAIN_SRC_C} ${MAIN_SRC_CPP})
+add_executable(breakout ${MAIN_SRC})
 
 # copy the dlls
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
