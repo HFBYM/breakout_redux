@@ -1,5 +1,5 @@
 # basic setting
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.12)
 project(breakout_redux)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -41,10 +41,13 @@ file(GLOB_RECURSE MAIN_SRC ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_executable(breakout ${MAIN_SRC})
 
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug")
+endif ()
 # copy the dlls
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin/Debug)
-    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin/Debug)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
+    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 else()
     set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin)
 endif()

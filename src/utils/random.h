@@ -8,7 +8,7 @@
 
 #pragma once
 #include <random>
-namespace random
+namespace m_random
 {
     class Random
     {
@@ -38,4 +38,4 @@ namespace random
         std::random_device rd;
         std::mt19937 generator;
     };
-} // namespace random
+} // namespace m_random

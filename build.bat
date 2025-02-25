@@ -10,5 +10,4 @@ cmake -B ./build_cmake
 @REM cmake -G "MinGW Makefiles" -B ./build_cmake
 
 :: compiling to exe
-cmake --build ./build_cmake --config Debug
-pause
+@REM cmake --build ./build_cmake --config Debug

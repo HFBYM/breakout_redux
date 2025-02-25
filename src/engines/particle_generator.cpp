@@ -165,7 +165,7 @@ namespace particle_generator
     void Particle::set(const glm::vec2 &master_pos, const glm::vec2 &master_velocity,
                        const glm::vec2 &master_size, const glm::vec4 &master_color, float range)
     {
-        using random::Random;
+        using m_random::Random;
         glm::vec2 pos;
         pos.x = 2 * Random::instance().randomFloat(range) - range;
         pos.y = 2 * Random::instance().randomFloat(range) - range;

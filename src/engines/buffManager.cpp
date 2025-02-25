@@ -47,7 +47,7 @@ namespace buff_manager
 
     void BuffManager::createBuff(const glm::vec2 &master_pos, const glm::vec2 &size)
     {
-        const float chance = random::Random::instance().randomFloat(100.0f);
+        const float chance = m_random::Random::instance().randomFloat(100.0f);
         const auto &data = resource_manager::ResourceManager::instance().getJsonData();
         int chance_sum = 0;
         const auto &m_data = data["resources"]["buff"].get<std::map<std::string,

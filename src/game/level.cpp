@@ -12,7 +12,7 @@
 #include <vector>
 #include<string>
 
-#include "objects/Brick.h"
+#include "objects/brick.h"
 #include "resource_manage/resource_manager.h"
 
 namespace level

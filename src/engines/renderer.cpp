@@ -13,7 +13,7 @@
 #include <string>
 #include <memory>
 
-#include <gtc\type_ptr.hpp>
+#include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 
 #include "resource_manage/resource_manager.h"

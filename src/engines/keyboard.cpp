@@ -1,7 +1,7 @@
 /*
  * @Author: Clare 1090535708@qq.com
  * @Date: 2024-12-26 15:32:39
- * @LastEditTime: 2025-02-23 10:41:25
+ * @LastEditTime: 2025-02-24 15:33:40
  * @FilePath: \breakout_redux\src\engines\keyboard.cpp
  * Copyright (c) 2025 by Clare, All Rights Reserved.
  */
@@ -23,9 +23,10 @@ namespace keyboard
 			MDEBUG();
 		else if (action == GLFW_PRESS || action == GLFW_RELEASE)
 		{
-			const auto& data = getData();
-			for (auto &[id, player] : data.at("Player"))
-				player->func_p(m_key, action);
+			const auto &data = getData();
+			if (data.find("Player") != data.end())
+				for (auto& [id, player] : data.at("Player"))
+					player->func_p(m_key, action);
 		}
 		else
 			return;

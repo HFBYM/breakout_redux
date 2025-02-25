@@ -35,7 +35,7 @@ namespace ball
           data(std::make_unique<BallData>(color, player_add_score))
     {
         using particle_generator::ParticleGenerator;
-        using random::Random;
+        using m_random::Random;
         constexpr float PI_FACTOR = (3.14159f / 180.0f);
         constexpr float start_theta = 40.0f * PI_FACTOR;
         constexpr float end_theta = 60.0f * PI_FACTOR;

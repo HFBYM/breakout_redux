@@ -13,7 +13,7 @@ I am not a professional game developer, nor a professional C++ programmer. This 
 
 ## TODO 功能实现
 
-vscode 完善readme 架构图 cmake ignore
+vscode 完善readme 架构图 cmake
 
 ## Dependencies
 
