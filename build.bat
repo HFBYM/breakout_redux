@@ -1,9 +1,4 @@
 @REM @echo off
-::figure out whether cmake is downloaded
-where cmake > nul
-if %errorlevel% == 1 (
-echo Failed to find cmake
-exit)
 
 ::building
 cmake -B ./build_cmake

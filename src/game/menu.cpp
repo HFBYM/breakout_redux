@@ -8,7 +8,9 @@
 
 #include "game/menu.h"
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <conio.h>
 
 #include <iostream>
@@ -136,7 +138,7 @@ namespace menu
         auto console = getConsoleSize();
         static auto calculateX = [&](int length) -> int
         {
-            return ((console.first - data->arrow_width -length) /2.0f);
+            return ((console.first - data->arrow_width - length) / 2.0f);
         };
 
         // calculate Y position
@@ -155,7 +157,7 @@ namespace menu
 
             for (unsigned int i = 0; i < static_cast<unsigned int>(items.size()); ++i)
             {
-                int xPos = calculateX(static_cast<int> (items[i].length()));
+                int xPos = calculateX(static_cast<int>(items[i].length()));
                 setCursorPos(xPos, startY + static_cast<int>(i));
 
                 if (i == data->selectedIndex)
@@ -173,12 +175,12 @@ namespace menu
         else if (data->preIndex != data->selectedIndex)
         {
             // clear the previous line
-            int xPos = calculateX(static_cast<int> (items[data->preIndex].length()));
+            int xPos = calculateX(static_cast<int>(items[data->preIndex].length()));
             setCursorPos(xPos, startY + data->preIndex);
             std::cout << "  " << items[data->preIndex] << "  ";
 
             // draw the new line
-            xPos = calculateX(static_cast<int> (items[data->selectedIndex].length()));
+            xPos = calculateX(static_cast<int>(items[data->selectedIndex].length()));
             setCursorPos(xPos, startY + data->selectedIndex);
             setColor(Menu::ConsoleColor::HIGHLIGHT);
             std::cout << "> " << items[data->selectedIndex] << " <";
