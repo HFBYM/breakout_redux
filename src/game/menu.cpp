@@ -136,7 +136,7 @@ namespace menu
         auto console = getConsoleSize();
         static auto calculateX = [&](int length) -> int
         {
-            return ((console.first - data->arrow_width - length) / 2.0f);
+            return static_cast<int>((console.first - data->arrow_width - length) / 2.0f);
         };
 
         // calculate Y position
@@ -218,7 +218,7 @@ namespace menu
                         return;
                     }
                 }
-                // Enter键处理
+                // Enter
                 else if (key == 13)
                 {
                     SoundEngine::instance().play_music("BLEEPMP3");
