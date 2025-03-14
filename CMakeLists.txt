@@ -14,7 +14,6 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 
 # set the include path
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLAD)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/glm)
@@ -24,14 +23,12 @@ include_directories(${CMAKE_SOURCE_DIR}/dependencies/stb_image)
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/json_parser)
 
 # set the libs
-link_directories(${CMAKE_SOURCE_DIR}/dependencies/freetype)
 link_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
 link_directories(${CMAKE_SOURCE_DIR}/dependencies/irrKlang/lib/Winx64-visualStudio)
 
 link_libraries(opengl32.lib)
 link_libraries(glfw3.lib)
 link_libraries(irrKlang.lib)
-link_libraries(freetyped.lib)
 link_libraries(imm32.lib)
 
 # find the src files
