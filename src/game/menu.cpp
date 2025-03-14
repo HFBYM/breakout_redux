@@ -1,11 +1,9 @@
-/*
- * @Author: Clare 1090535708@qq.com
- * @Date: 2025-02-08 14:20:54
- * @LastEditTime: 2025-02-23 19:36:38
- * @FilePath: \breakout_redux\src\game\menu.cpp
- * Copyright (c) 2025 by Clare, All Rights Reserved.
+/**
+ * @file menu.cpp
+ * @author: Clare  email: 1090535708@qq.com
+ * @date 2025-03-14
+ * @copyright Copyright (c) 2025 by Clare, All Rights Reserved.
  */
-
 #include "game/menu.h"
 
 #ifdef _WIN32
