@@ -7,9 +7,6 @@
  */
 #include "objects/ball.h"
 
-#include<memory>
-#include<string>
-
 #include "engines/particle_generator.h"
 #include "engines/soundEngine.h"
 #include "utils/random.h"

@@ -7,10 +7,10 @@
  */
 
 #pragma once
-#include <vector>
-#include <memory>
-#include <string>
-
+#include "utils/pch.h"
+// #include <memory>
+// #include <vector>
+// #include <string>
 #include "obj_for_engines/renderObj.h"
 #include "obj_for_engines/moveObj.h"
 namespace buff_manager

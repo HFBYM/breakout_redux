@@ -8,11 +8,6 @@
 
 #include "engines/buffManager.h"
 
-#include <vector>
-#include <memory>
-#include <map>
-#include <string>
-
 #include "utils/random.h"
 #include "engines/soundEngine.h"
 #include "resource_manage/resource_manager.h"

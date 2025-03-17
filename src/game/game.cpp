@@ -18,11 +18,7 @@
 #include <glad.h>
 #include <glfw3.h>	//this should be included after glad.h
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include <memory>
-
+#include "utils/pch.h"
 #include "obj_for_engines/renderObj.h"
 #include "resource_manage/resource_manager.h"
 #include "engines/keyboard.h"

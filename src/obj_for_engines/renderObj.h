@@ -7,8 +7,7 @@
  */
 
 #pragma once
-#include <memory>
-#include<string>
+#include "utils/pch.h"
 #include "objects/object.h"
 namespace render_obj
 {

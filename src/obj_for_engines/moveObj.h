@@ -6,8 +6,7 @@
  * Copyright (c) 2025 by Clare, All Rights Reserved.
  */
 #pragma once
-#include <memory>
-#include <string>
+#include "utils/pch.h"
 #include <glm.hpp>
 #include "objects/object.h"
 namespace move_obj

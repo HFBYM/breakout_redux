@@ -8,10 +8,6 @@
 
 #include "game/level.h"
 
-#include <iostream>
-#include <vector>
-#include<string>
-
 #include "objects/brick.h"
 #include "resource_manage/resource_manager.h"
 

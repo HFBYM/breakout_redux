@@ -8,9 +8,6 @@
 
 #include "obj_for_engines/moveObj.h"
 
-#include <memory>
-#include <string>
-
 #include "engines/movement.h"
 #include "engines/collision.h"
 #include "moveObj.h"

@@ -6,10 +6,7 @@
  * Copyright (c) 2025 by Clare, All Rights Reserved.
  */
 #pragma once
-#include <functional>
-#include<memory>
-#include<string>
-#include<vector>
+#include"utils/pch.h"
 namespace menu
 {
     class Menu

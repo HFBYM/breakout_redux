@@ -6,8 +6,7 @@
  * Copyright (c) 2025 by Clare, All Rights Reserved. 
  */
 #pragma once
-#include <string>
-#include <memory>
+#include "utils/pch.h"
 namespace shader{
 class Shader
 {

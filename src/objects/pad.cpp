@@ -7,9 +7,6 @@
  */
 #include "objects/pad.h"
 
-#include <memory>
-#include <string>
-
 #include "engines/particle_generator.h"
 namespace pad
 {

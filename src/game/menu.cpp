@@ -11,11 +11,6 @@
 #endif
 #include <conio.h>
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <utility>
-
 #include "engines/soundEngine.h"
 namespace menu
 {

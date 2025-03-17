@@ -7,9 +7,10 @@
  */
 
 #pragma once
-#include<string>
-#include<functional>
+// #include<string>
+// #include<functional>
 #include<glm.hpp>
+#include "utils/pch.h"
 
 #include "resource_manage/logger.h"
 namespace collision

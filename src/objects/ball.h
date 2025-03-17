@@ -6,9 +6,7 @@
  * Copyright (c) 2025 by Clare, All Rights Reserved.
  */
 #pragma once
-#include <string>
-#include <functional>
-#include <memory>
+#include "utils/pch.h"
 #include "obj_for_engines/renderObj.h"
 #include "obj_for_engines/moveObj.h"
 namespace ball

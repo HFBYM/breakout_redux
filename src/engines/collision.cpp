@@ -7,14 +7,8 @@
  */
 #include "engines/collision.h"
 
-#include <functional>
-#include <vector>
 #include <algorithm>
 #include <limits>
-#include <string>
-#include <map>
-#include <utility>
-#include <glm.hpp>
 namespace collision
 {
 	struct CollisionResult

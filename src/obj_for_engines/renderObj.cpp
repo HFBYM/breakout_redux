@@ -7,9 +7,6 @@
  */
 #include "obj_for_engines/renderObj.h"
 
-#include <string>
-#include <memory>
-
 #include "engines/renderer.h"
 #include "renderObj.h"
 namespace render_obj

@@ -10,9 +10,7 @@
 #include <glad.h>
 #include <glfw3.h>
 
-#include <iostream>
 #include<tuple>
-#include<string>
 
 #include <glm.hpp>
 #include <gtc\type_ptr.hpp>

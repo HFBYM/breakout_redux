@@ -5,4 +5,4 @@ cmake -B ./build_cmake
 
 :: compiling to exe
 cmake --build ./build_cmake --config Debug
-pause
+@REM pause

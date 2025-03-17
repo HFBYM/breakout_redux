@@ -8,12 +8,7 @@
 
 #include "engines/particle_generator.h"
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <memory>
-#include <utility>
-
+#include "utils/pch.h"
 #include "obj_for_engines/renderObj.h"
 #include "obj_for_engines/moveObj.h"
 #include "utils/random.h"

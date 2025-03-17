@@ -2,9 +2,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(breakout_redux)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # debug by default 
-# set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Debug)
 
 # set the macro
 add_compile_definitions(PROJECT_DIR="${CMAKE_SOURCE_DIR}")
@@ -12,43 +13,44 @@ add_compile_definitions(PROJECT_DIR="${CMAKE_SOURCE_DIR}")
 #depose the middle files
 set(CMAKE_SUPPRESS_REGENERATION true)
 
-# set the include path
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLAD)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/glm)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/irrKlang)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/KHR)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/stb_image)
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/json_parser)
-
-# set the libs
-link_directories(${CMAKE_SOURCE_DIR}/dependencies/GLFW)
-link_directories(${CMAKE_SOURCE_DIR}/dependencies/irrKlang/lib/Winx64-visualStudio)
-
-link_libraries(opengl32.lib)
-link_libraries(glfw3.lib)
-link_libraries(irrKlang.lib)
-link_libraries(imm32.lib)
-
 # find the src files
 file(GLOB_RECURSE MAIN_SRC ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/*.c)
 
 # the dlls need to be in the same directory of exe
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-windows-x64)
 add_executable(breakout ${MAIN_SRC})
 
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
-endif ()
-# copy the dlls
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
-    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
-else()
-    set(DLL_DES_DIR ${CMAKE_SOURCE_DIR}/bin)
-endif()
+# set the include path
+target_include_directories(breakout PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/dependencies/GLAD
+    ${CMAKE_SOURCE_DIR}/dependencies/GLFW
+    ${CMAKE_SOURCE_DIR}/dependencies/glm
+    ${CMAKE_SOURCE_DIR}/dependencies/irrKlang
+    ${CMAKE_SOURCE_DIR}/dependencies/KHR
+    ${CMAKE_SOURCE_DIR}/dependencies/stb_image
+    ${CMAKE_SOURCE_DIR}/dependencies/json_parser
+)
+
+target_precompile_headers(breakout PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/utils/pch.h>)
+
+# set the libs
+target_link_directories(breakout PRIVATE
+    ${CMAKE_SOURCE_DIR}/dependencies/GLFW
+    ${CMAKE_SOURCE_DIR}/dependencies/irrKlang/lib/Winx64-visualStudio
+)
+
+target_link_libraries(breakout PRIVATE opengl32 glfw3 irrKlang imm32)
+
 set(DLL_SRC_DIR ${CMAKE_SOURCE_DIR}/dependencies/irrKlang/lib/Winx64-visualStudio)
 
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${DLL_SRC_DIR}/ikpMP3.dll ${DLL_DES_DIR})
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${DLL_SRC_DIR}/irrKlang.dll ${DLL_DES_DIR})
+add_custom_command(TARGET breakout POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${DLL_SRC_DIR}/ikpMP3.dll
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+)
+add_custom_command(TARGET breakout POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${DLL_SRC_DIR}/irrKlang.dll
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+)

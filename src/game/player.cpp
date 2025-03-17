@@ -7,10 +7,7 @@
  */
 #include "game/player.h"
 
-#include <iostream>
-#include <memory>
-#include <string>
-
+#include "utils/pch.h"
 #include "engines/buffManager.h"
 #include "utils/keyval.h"
 #include "game/menu.h"
