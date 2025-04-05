@@ -90,13 +90,16 @@ namespace render
 
             model = glm::scale(model, glm::vec3(data.size, 1.0f));
 
-            resource_manager.getShader(data.shader_name).setUniform("model", model);
-            resource_manager.getShader(data.shader_name).setUniform("spriteColor", data.color);
+            resource_manager.getShader(data.shader_name).setUniform("u_model", model);
+            resource_manager.getShader(data.shader_name).setUniform("u_spriteColor", data.color);
 
             glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width),
                                         static_cast<GLfloat>(height), 0.0f, -1.0f, 1.0f);
-            resource_manager.getShader(data.shader_name).use().setUniform("image", 0);
-            resource_manager.getShader(data.shader_name).use().setUniform("proj", proj);
+            resource_manager.getShader(data.shader_name).use().setUniform("u_image", 0);
+            resource_manager.getShader(data.shader_name).use().setUniform("u_proj", proj);
+
+            // check the uniform list
+            resource_manager.getShader(data.shader_name).checkUniformList();
 
             // bind the texture to slot 0
             glActiveTexture(GL_TEXTURE0);
